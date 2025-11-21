@@ -1,0 +1,5 @@
+{
+  "name": "PDF Transcriber ",
+  "description": "An application to transcribe text from PDF documents using Google's Gemini API.",
+  "requestFramePermissions": []
+}
