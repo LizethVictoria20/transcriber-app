@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --primary-color: #4f46e5;
   --primary-color-light: #6366f1;
@@ -59,14 +61,6 @@ h1,
 h2,
 h3 {
   font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
 }
 
 .logo {
@@ -83,41 +77,13 @@ header {
   height: 32px;
 }
 
-nav {
-  display: flex;
-  gap: 0.5rem;
-  background-color: #eef2ff;
-  padding: 0.5rem;
-  border-radius: var(--border-radius);
-  transition: var(--transition);
-}
+
 
 body[data-theme="dark"] nav {
   background-color: #374151;
 }
 
-nav button {
-  background: none;
-  border: none;
-  padding: 0.75rem 1.25rem;
-  font-family: var(--font-family);
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--muted-text-color);
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: var(--transition);
-}
 
-nav button:hover {
-  color: var(--primary-color);
-}
-
-nav button.active {
-  background-color: var(--surface-color);
-  color: var(--primary-color);
-  box-shadow: var(--box-shadow);
-}
 
 body[data-theme="dark"] nav button.active {
   background-color: var(--primary-color);
@@ -149,21 +115,6 @@ main {
   width: 100%;
   max-width: 420px;
   border: 1px solid var(--border-color);
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.login-header h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-}
-
-.login-header p {
-  color: var(--muted-text-color);
-  font-size: 0.95rem;
 }
 
 .login-footer {
@@ -321,11 +272,6 @@ body[data-theme="dark"] .file-info {
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   font-family: var(--font-family);
-
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-
   /* Si tienes estilos personalizados, migrarlos a clases Tailwind o incluirlos aquí si son necesarios */
   transition: var(--transition);
   background-color: var(--surface-color);
@@ -629,12 +575,7 @@ body[data-theme="dark"] .editor-content.read-only {
 
 /* END EDITOR STYLES */
 
-/* TAB NAVIGATION STYLES */
-.tabs-header {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-}
+
 
 .tab-button {
   padding: 0.75rem 1.5rem;
@@ -795,12 +736,6 @@ body[data-theme="dark"] .send-button:disabled {
   color: #6b7280;
 }
 
-.result-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
 
 .history-list {
   list-style: none;

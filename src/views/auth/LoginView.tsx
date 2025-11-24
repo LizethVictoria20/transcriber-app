@@ -43,24 +43,24 @@ export default function LoginView() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="login-form">
-                    <div className="form-group">
+                    <div className="mb-6 flex flex-col">
                         <label htmlFor="email">Correo Electrónico</label>
                         <input 
                             type="email" 
                             id="email" 
-                            className="custom-input"
+                            className="w-full px-4 py-2 border border-gray-300 rounded bg-white text-gray-900"
                             placeholder="nombre@ejemplo.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="mb-6 flex flex-col">
                         <label htmlFor="password">Contraseña</label>
                         <input 
                             type="password" 
                             id="password" 
-                            className="custom-input"
+                            className="w-full px-4 py-2 border border-gray-300 rounded bg-white text-gray-900"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -71,7 +71,7 @@ export default function LoginView() {
 
                     {error && <div className="error-message" style={{fontSize: '0.9rem', textAlign: 'center'}}>{error}</div>}
 
-                    <button type="submit" className="button" style={{width: '100%', marginTop: '1rem'}} disabled={loading}>
+                    <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition w-full mt-4" disabled={loading}>
                         {loading ? <span className="loader"></span> : (isLogin ? 'Iniciar Sesión' : 'Registrarse')}
                     </button>
                 </form>

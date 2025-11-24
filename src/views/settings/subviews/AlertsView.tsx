@@ -59,7 +59,7 @@ export default function AlertsView({ setSettingsView, alertSettings, setAlertSet
     return (
         <div>
             <div className="settings-page-header">
-                <button className="button secondary" onClick={() => setSettingsView('main')}>
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={() => setSettingsView('main')}>
                     &larr; Volver
                 </button>
                 <h2>Alertas y Notificaciones</h2>
@@ -96,7 +96,7 @@ export default function AlertsView({ setSettingsView, alertSettings, setAlertSet
                         onToggle={() => handleToggle('sslCertificateExpiry')}
                     />
                 </div>
-                 <div className="form-group" style={{marginTop: '1.5rem'}}>
+                 <div className="mb-6 flex flex-col mt-6">
                     <label htmlFor="email-notification">Dirección de Correo para Alertas</label>
                     <input type="text" id="email-notification" placeholder="ejemplo@dominio.com" disabled={!localSettings.emailNotifications} />
                     <small>Las alertas se enviarán a esta dirección. (Función no implementada)</small>

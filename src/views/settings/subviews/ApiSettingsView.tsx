@@ -26,7 +26,7 @@ export default function ApiSettingsView({
     <div>
       <div className="settings-page-header">
         <button
-          className="button secondary"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition font-semibold"
           onClick={() => setSettingsView("main")}
         >
           &larr; Volver
@@ -99,7 +99,7 @@ export default function ApiSettingsView({
       </div>
 
       <div className="settings-actions">
-        <button className="button" onClick={handleSave}>
+        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition font-semibold" onClick={handleSave}>
           Guardar Cambios
         </button>
         {saved && <span className="save-confirm">¡Guardado!</span>}

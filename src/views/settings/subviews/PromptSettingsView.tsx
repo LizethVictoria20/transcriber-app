@@ -21,7 +21,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
     return (
         <div>
             <div className="settings-page-header">
-                 <button className="button secondary" onClick={() => setSettingsView('main')}>
+                 <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={() => setSettingsView('main')}>
                     &larr; Volver
                 </button>
                 <h2>Cadenas de Prompts</h2>
@@ -30,7 +30,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
                 Personaliza las instrucciones (prompts) que se envían a los modelos de IA. Esto te permite ajustar el tono, formato o estilo de las respuestas.
             </p>
 
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="prompt-transcription">Prompt de Transcripción Estándar</label>
                 <textarea 
                     id="prompt-transcription"
@@ -39,7 +39,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
                 />
             </div>
 
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="prompt-translate">Prompt de Traducción (Inglés -&gt; Español)</label>
                 <textarea 
                     id="prompt-translate"
@@ -48,7 +48,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
                 />
             </div>
 
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="prompt-summary">Prompt de Resumen General</label>
                 <textarea 
                     id="prompt-summary"
@@ -58,7 +58,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
                 <small>Utiliza [TRANSCRIPTION] como marcador de posición para el texto extraído.</small>
             </div>
 
-             <div className="form-group">
+             <div className="mb-6 flex flex-col">
                 <label htmlFor="prompt-page-summary">Prompt de Resumen por Página</label>
                 <textarea 
                     id="prompt-page-summary"
@@ -68,7 +68,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
                 <small>Instrucción para generar la tabla de resumen desglosada por páginas.</small>
             </div>
 
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="prompt-auto-tagging">Prompt de Etiquetado Inteligente</label>
                 <textarea 
                     id="prompt-auto-tagging"
@@ -79,7 +79,7 @@ export default function PromptSettingsView({ prompts, setPrompts, setSettingsVie
             </div>
 
             <div className="settings-actions">
-                <button className="button" onClick={handleSave}>
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={handleSave}>
                     Guardar Cambios
                 </button>
                 {saved && <span className="save-confirm">¡Guardado!</span>}

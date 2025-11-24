@@ -21,7 +21,7 @@ export default function SotView({ sotSettings, setSotSettings, setSettingsView }
     return (
         <div>
             <div className="settings-page-header">
-                 <button className="button secondary" onClick={() => setSettingsView('main')}>
+                 <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={() => setSettingsView('main')}>
                     &larr; Volver
                 </button>
                 <h2>SOT (Fuente de Verdad)</h2>
@@ -30,7 +30,7 @@ export default function SotView({ sotSettings, setSotSettings, setSettingsView }
             <p className="settings-description">
                 Gestiona la documentación y especificaciones del sistema. Este es el lugar central para registrar la versión, cambios importantes y cómo funciona el sistema.
             </p>
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="sot-version">Versión del Sistema</label>
                  <input
                     type="text"
@@ -40,7 +40,7 @@ export default function SotView({ sotSettings, setSotSettings, setSettingsView }
                 />
                 <small>La versión actual del sistema (ej. 1.0.0).</small>
             </div>
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="sot-changes">Cambios Importantes (Changelog)</label>
                 <textarea
                     id="sot-changes"
@@ -50,7 +50,7 @@ export default function SotView({ sotSettings, setSotSettings, setSettingsView }
                 />
                 <small>Lista de los cambios más recientes o significativos en el sistema.</small>
             </div>
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
                 <label htmlFor="sot-description">Descripción del Sistema</label>
                 <textarea
                     id="sot-description"
@@ -62,7 +62,7 @@ export default function SotView({ sotSettings, setSotSettings, setSettingsView }
             </div>
 
             <div className="settings-actions">
-                <button className="button" onClick={handleSave}>
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={handleSave}>
                     Guardar Cambios
                 </button>
                 {saved && <span className="save-confirm">¡Guardado!</span>}

@@ -98,7 +98,7 @@ export default function SystemPreferencesView({ preferences, setPreferences, set
     return (
         <div>
             <div className="settings-page-header">
-                 <button className="button secondary" onClick={() => setSettingsView('main')}>
+                 <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={() => setSettingsView('main')}>
                     &larr; Volver
                 </button>
                 <h2>Preferencias del Sistema</h2>

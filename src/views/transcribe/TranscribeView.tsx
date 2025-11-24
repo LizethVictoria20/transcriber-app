@@ -346,8 +346,8 @@ export default function TranscribeView({
             </div>
           )}
 
-          <div className="controls">
-            <div className="form-group">
+          <div className="flex flex-col gap-6 mt-4">
+            <div className="mb-6 flex flex-col">
               <label htmlFor="transcription-name">
                 Nombre de la Transcripción
               </label>
@@ -358,13 +358,14 @@ export default function TranscribeView({
                 onChange={(e) => setTranscriptionName(e.target.value)}
                 placeholder="Ej: Resumen de reunión"
                 disabled={isProcessing}
+                className="w-full px-4 py-2 border border-gray-300 rounded bg-white text-gray-900"
               />
             </div>
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
               <label>Proveedor de Transcripción</label>
               <div className="provider-selector">
                 <button
-                  className={`button ${
+                  className={`px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition ${
                     provider === "gemini" ? "" : "secondary"
                   }`}
                   onClick={() => setProvider("gemini")}
@@ -372,7 +373,7 @@ export default function TranscribeView({
                   Google Gemini
                 </button>
                 <button
-                  className={`button ${
+                  className={`px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition ${
                     provider === "openai" ? "" : "secondary"
                   }`}
                   onClick={() => setProvider("openai")}
@@ -381,7 +382,7 @@ export default function TranscribeView({
                 </button>
               </div>
             </div>
-            <div className="form-group">
+            <div className="mb-6 flex flex-col">
               <label htmlFor="page-selection">
                 Páginas a transcribir (ej: 1-3, 5, 8):
               </label>
@@ -391,6 +392,7 @@ export default function TranscribeView({
                 value={pageSelection}
                 onChange={(e) => setPageSelection(e.target.value)}
                 disabled={transcribeAll || isProcessing}
+                className="w-full px-4 py-2 border border-gray-300 rounded bg-white text-gray-900"
               />
             </div>
             <div
@@ -440,7 +442,7 @@ export default function TranscribeView({
                 pagesToTranscribe.length === 0 ||
                 (provider === "openai" && !apiKeys.openai)
               }
-              className="button"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition"
             >
               {isProcessing ? (
                 <>
