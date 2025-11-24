@@ -17,101 +17,119 @@ interface NavbarProps {
 export default function Navbar({ currentView, onNavigate }: NavbarProps) {
   const { user, signOut } = useAuth();
 
+  const getNavLinkClass = (viewName: string) => {
+    const isActive = currentView === viewName;
+    return `flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 cursor-pointer ${
+      isActive
+        ? "text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100"
+        : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+    }`;
+  };
+
   return (
-    <header className="w-full bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-center px-6 md:px-8 h-16 gap-52">
-        {/* Logo Section */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600 border border-blue-300 shadow-md">
-            <HiDocumentText className="w-6 h-6 text-white" />
+    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-gray-200/60 bg-white/90 backdrop-blur-md transition-all">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 md:px-8">
+        {/* --- LOGO --- */}
+        <div
+          className="flex items-center gap-3.5 select-none cursor-pointer"
+          onClick={() => onNavigate("transcribe")}
+        >
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-lg shadow-blue-600/20 transition-transform hover:scale-105">
+            <HiDocumentText className="h-6 w-6" />
           </div>
 
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none">
               Auto Transcriptor
             </h1>
-            <p className="text-xs text-slate-600">
+            <p className="mt-1 text-[11px] font-medium uppercase tracking-wider text-slate-500">
               IA para Procesos Judiciales
             </p>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-4">
+        <nav className="hidden md:flex items-center gap-2 bg-white/50 p-1.5 rounded-2xl border border-gray-100 shadow-sm">
           <button
             onClick={() => onNavigate("transcribe")}
-            className={`flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-md transition-all cursor-pointer ${
-              currentView === "transcribe"
-                ? "text-gray-900 bg-gray-50"
-                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 decoration-solid"
-            }`}
+            className={getNavLinkClass("transcribe")}
           >
-            <HiOutlineDocumentText className="w-4.5 h-4.5" />
+            <HiOutlineDocumentText
+              className={`w-5 h-5 ${
+                currentView === "transcribe" ? "text-blue-600" : ""
+              }`}
+            />
             Transcribir
           </button>
+
           <button
             onClick={() => onNavigate("history")}
-            className={`flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-md transition-all cursor-pointer ${
-              currentView === "history"
-                ? "text-gray-900 bg-gray-50"
-                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-            }`}
+            className={getNavLinkClass("history")}
           >
-            <HiOutlineClipboardDocumentList className="w-4.5 h-4.5" />
-            Transcripciones
+            <HiOutlineClipboardDocumentList
+              className={`w-5 h-5 ${
+                currentView === "history" ? "text-blue-600" : ""
+              }`}
+            />
+            Mis Expedientes
           </button>
+
           <button
             onClick={() => onNavigate("settings")}
-            className={`flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-md transition-all cursor-pointer ${
-              currentView === "settings"
-                ? "text-gray-900 bg-gray-50"
-                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-            }`}
+            className={getNavLinkClass("settings")}
           >
-            <HiOutlineCog6Tooth className="w-4.5 h-4.5" />
+            <HiOutlineCog6Tooth
+              className={`w-5 h-5 ${
+                currentView === "settings" ? "text-blue-600" : ""
+              }`}
+            />
             Configuración
           </button>
         </nav>
 
-        {/* User Profile Section */}
+        {/* --- USER PROFILE SECTION --- */}
         {user && (
-          <div className="flex items-center gap-3">
-            {/* Status Indicator */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 rounded-full">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-              <span className="text-xs font-medium text-emerald-700">
-                Activo
-              </span>
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 pl-5 border-l border-gray-200">
+              <div className="hidden lg:block text-right">
+                <p className="text-sm font-semibold text-slate-900 leading-tight">
+                  {user.name || "Usuario"}
+                </p>
+                <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-[10px] font-medium text-emerald-600 uppercase tracking-wide">
+                    Conectado
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-white bg-slate-100 shadow-sm ring-2 ring-transparent hover:ring-blue-100 transition-all cursor-pointer"
+                title={user.email || "Perfil"}
+              >
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt="Perfil"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-slate-800 to-slate-900 text-xs font-bold text-white">
+                    {user.name ? user.name.substring(0, 2).toUpperCase() : "US"}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Divider */}
-            <div className="w-px h-5 bg-gray-200"></div>
-
-            {/* User Avatar */}
-            <div
-              className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white font-medium text-xs cursor-pointer hover:ring-2 hover:ring-gray-200 transition-all"
-              title={user.email || "Usuario"}
-            >
-              {user.avatarUrl ? (
-                <img
-                  src={user.avatarUrl}
-                  alt={user.name || "Usuario"}
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <span>
-                  {user.name ? user.name.substring(0, 2).toUpperCase() : "U"}
-                </span>
-              )}
-            </div>
-
-            {/* Logout Button */}
+            {/* Logout Action */}
             <button
               onClick={signOut}
-              className="p-1.5 rounded-md hover:bg-gray-50 text-gray-400 hover:text-gray-600 transition-all cursor-pointer"
+              className="group relative flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600"
               title="Cerrar Sesión"
             >
-              <IoLogOutOutline className="w-5 h-5" />
+              <IoLogOutOutline className="h-5 w-5" />
             </button>
           </div>
         )}
