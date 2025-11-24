@@ -1,129 +1,317 @@
-
-import React, { useState } from 'react';
-import type { SettingsViewType, AlertSettings } from '../../../types';
+import React, { useState } from "react";
+import {
+  HiOutlineArrowLeft,
+  HiOutlineCog,
+  HiOutlineInformationCircle,
+  HiOutlinePlay,
+  HiOutlineChartBar,
+  HiOutlineLockClosed,
+} from "react-icons/hi2";
+import type { SettingsViewType } from "../../../types";
 
 interface AlertsViewProps {
-    setSettingsView: (view: SettingsViewType) => void;
-    alertSettings: AlertSettings;
-    setAlertSettings: (settings: AlertSettings) => void;
+  setSettingsView: (view: SettingsViewType) => void;
 }
 
-const systemStatus = [
-    { label: "Base de Datos", value: "Disponible", status: "operational" },
-    { label: "Workers de Transcripción", value: "Operativo", status: "operational" },
-    { label: "API de Google Gemini", value: "Operacional", status: "operational" },
-    { label: "API de OpenAI", value: "Operacional", status: "operational" },
-    { label: "Estado de la Memoria", value: "45% Usado", status: "operational" },
-    { label: "Espacio del Disco", value: "60% Usado", status: "operational" },
-    { label: "Uso de la CPU", value: "15% Carga", status: "operational" },
-    { label: "Tiempo de Respuesta Promedio", value: "5.2s", status: "operational" },
-    { label: "Falla de Procesamiento", value: "0.1% Tasa", status: "operational" },
-    { label: "Falla de Carga de Archivos", value: "0.05% Tasa", status: "operational" },
-    { label: "Cola de Transcripción", value: "0 Trabajos", status: "operational" },
-    { label: "Certificado SSL", value: "Expira en 80 días", status: "warning" },
+type Severity = "critical" | "high" | "medium";
+type IconType = "cog" | "chart" | "lock";
+
+interface AlertItem {
+  id: number;
+  title: string;
+  desc: string;
+  severity: Severity;
+  enabled: boolean;
+  iconType: IconType;
+}
+
+const initialAlertsData: AlertItem[] = [
+  // CRÍTICOS (Rojos)
+  {
+    id: 1,
+    title: "Base de datos no disponible",
+    desc: "Alerta crítica cuando PostgreSQL no responde o está desconectado",
+    severity: "critical",
+    enabled: true,
+    iconType: "cog",
+  },
+  {
+    id: 2,
+    title: "Falla en workers de procesamiento",
+    desc: "Notifica cuando los workers principales se desconectan o fallan",
+    severity: "critical",
+    enabled: true,
+    iconType: "cog",
+  },
+  {
+    id: 3,
+    title: "Memoria del sistema agotada",
+    desc: "Alerta cuando el uso de memoria supera el 90% disponible",
+    severity: "critical",
+    enabled: true,
+    iconType: "cog",
+  },
+  {
+    id: 4,
+    title: "Espacio en disco críticamente bajo",
+    desc: "Notifica cuando queda menos del 10% de espacio disponible",
+    severity: "critical",
+    enabled: true,
+    iconType: "cog",
+  },
+  {
+    id: 5,
+    title: "APIs de IA no disponibles",
+    desc: "Alerta cuando OpenAI o Google Gemini devuelven errores continuos",
+    severity: "critical",
+    enabled: true,
+    iconType: "cog",
+  },
+  {
+    id: 6,
+    title: "Falla en procesamiento de documentos",
+    desc: "Error crítico en la cadena de transcripción de PDFs",
+    severity: "critical",
+    enabled: true,
+    iconType: "cog",
+  },
+  // ALTOS (Naranjas)
+  {
+    id: 7,
+    title: "Tiempo de respuesta extremadamente lento",
+    desc: "Alerta cuando las respuestas superan 30 segundos consistentemente",
+    severity: "high",
+    enabled: true,
+    iconType: "chart",
+  },
+  {
+    id: 8,
+    title: "Cola de transcripción bloqueada",
+    desc: "Trabajos de transcripción acumulados sin procesar por más de 1 hora",
+    severity: "high",
+    enabled: true,
+    iconType: "chart",
+  },
+  {
+    id: 9,
+    title: "Errores repetidos en APIs de IA",
+    desc: "Más del 20% de solicitudes a proveedores de IA fallan",
+    severity: "high",
+    enabled: true,
+    iconType: "cog",
+  },
+  {
+    id: 10,
+    title: "Fallas en carga de archivos",
+    desc: "Usuarios no pueden subir PDFs correctamente al sistema",
+    severity: "high",
+    enabled: true,
+    iconType: "cog",
+  },
+  // MEDIOS (Amarillos)
+  {
+    id: 11,
+    title: "Certificados SSL próximos a vencer",
+    desc: "Certificados de seguridad vencen en menos de 30 días",
+    severity: "medium",
+    enabled: false,
+    iconType: "lock",
+  },
+  {
+    id: 12,
+    title: "Uso elevado de CPU",
+    desc: "El procesador supera el 85% de uso por más de 15 minutos",
+    severity: "medium",
+    enabled: false,
+    iconType: "chart",
+  },
 ];
 
-const AlertSettingItem: React.FC<{
-    label: string;
-    description: string;
-    isEnabled: boolean;
-    onToggle: () => void;
-}> = ({ label, description, isEnabled, onToggle }) => (
-    <div className="alert-setting-item">
-        <div className="alert-setting-text">
-            <span className="alert-setting-label">{label}</span>
-            <p className="alert-setting-description">{description}</p>
-        </div>
-        <label className="toggle-switch">
-            <input type="checkbox" checked={isEnabled} onChange={onToggle} />
-            <span className="toggle-slider"></span>
-        </label>
-    </div>
+const ToggleSwitch = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: () => void;
+}) => (
+  <button
+    onClick={onChange}
+    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${
+      checked ? "bg-slate-900" : "bg-slate-200"
+    }`}
+  >
+    <span
+      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-sm ${
+        checked ? "translate-x-6" : "translate-x-1"
+      }`}
+    />
+  </button>
 );
 
+const getSeverityStyles = (severity: Severity) => {
+  switch (severity) {
+    case "critical":
+      return {
+        dot: "bg-red-500",
+        badge: "bg-red-50 text-red-600 border-red-100",
+        label: "Crítico",
+      };
+    case "high":
+      return {
+        dot: "bg-orange-500",
+        badge: "bg-orange-50 text-orange-600 border-orange-100",
+        label: "Alto",
+      };
+    case "medium":
+      return {
+        dot: "bg-yellow-400",
+        badge: "bg-yellow-50 text-yellow-700 border-yellow-100",
+        label: "Medio",
+      };
+    default:
+      return {
+        dot: "bg-slate-400",
+        badge: "bg-slate-50 text-slate-600 border-slate-100",
+        label: "Normal",
+      };
+  }
+};
 
-export default function AlertsView({ setSettingsView, alertSettings, setAlertSettings }: AlertsViewProps) {
-    const [localSettings, setLocalSettings] = useState<AlertSettings>(alertSettings);
-    const [saved, setSaved] = useState(false);
+const getIcon = (type: IconType) => {
+  switch (type) {
+    case "chart":
+      return <HiOutlineChartBar className="w-6 h-6" />;
+    case "lock":
+      return <HiOutlineLockClosed className="w-6 h-6" />;
+    case "cog":
+    default:
+      return <HiOutlineCog className="w-6 h-6" />;
+  }
+};
 
-    const handleToggle = (key: keyof AlertSettings) => {
-        setLocalSettings(prev => ({ ...prev, [key]: !prev[key] }));
-    };
+export default function AlertsView({ setSettingsView }: AlertsViewProps) {
+  const [alerts, setAlerts] = useState(initialAlertsData);
 
-    const handleSave = () => {
-        setAlertSettings(localSettings);
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
-    };
-
-    return (
-        <div>
-            <div className="settings-page-header">
-                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-semibold transition" onClick={() => setSettingsView('main')}>
-                    &larr; Volver
-                </button>
-                <h2>Alertas y Notificaciones</h2>
-            </div>
-             <p className="settings-description">
-                Configurar umbrales de alertas y canales de notificación. El estado del sistema se actualiza en tiempo real.
-            </p>
-
-            <div className="settings-category">
-                <h3 className="settings-section-header">Configuración de Alertas</h3>
-                <div className="alert-settings-list">
-                    <AlertSettingItem
-                        label="Notificaciones por Correo Electrónico"
-                        description="Activa para recibir todas las alertas habilitadas por correo electrónico."
-                        isEnabled={localSettings.emailNotifications}
-                        onToggle={() => handleToggle('emailNotifications')}
-                    />
-                     <AlertSettingItem
-                        label="Falla de Procesamiento"
-                        description="Recibir una alerta si la tasa de fallos de transcripción supera el 5%."
-                        isEnabled={localSettings.failureRate}
-                        onToggle={() => handleToggle('failureRate')}
-                    />
-                     <AlertSettingItem
-                        label="Espacio de Disco Bajo"
-                        description="Recibir una alerta si el espacio de disco disponible cae por debajo del 20%."
-                        isEnabled={localSettings.lowDiskSpace}
-                        onToggle={() => handleToggle('lowDiskSpace')}
-                    />
-                     <AlertSettingItem
-                        label="Vencimiento del Certificado SSL"
-                        description="Recibir una alerta cuando el certificado SSL esté a menos de 30 días de expirar."
-                        isEnabled={localSettings.sslCertificateExpiry}
-                        onToggle={() => handleToggle('sslCertificateExpiry')}
-                    />
-                </div>
-                 <div className="mb-6 flex flex-col mt-6">
-                    <label htmlFor="email-notification">Dirección de Correo para Alertas</label>
-                    <input type="text" id="email-notification" placeholder="ejemplo@dominio.com" disabled={!localSettings.emailNotifications} />
-                    <small>Las alertas se enviarán a esta dirección. (Función no implementada)</small>
-                </div>
-            </div>
-
-            <div className="settings-actions">
-                <button className="button" onClick={handleSave}>
-                    Guardar Cambios
-                </button>
-                {saved && <span className="save-confirm">¡Guardado!</span>}
-            </div>
-
-            <div className="settings-category">
-                <h3 className="settings-section-header">Estado del Sistema</h3>
-                <div className="system-status-list">
-                    {systemStatus.map(item => (
-                        <div key={item.label} className="status-item">
-                            <span className="status-item-label">{item.label}</span>
-                            <span className="status-item-value">
-                                {item.value}
-                                <span className={`status-indicator ${item.status}`}></span>
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+  const toggleAlert = (id: number) => {
+    setAlerts(
+      alerts.map((alert) =>
+        alert.id === id ? { ...alert, enabled: !alert.enabled } : alert
+      )
     );
+  };
+
+  // Contadores dinámicos
+  const activeCount = alerts.filter((a) => a.enabled).length;
+  const criticalCount = alerts.filter(
+    (a) => a.severity === "critical" && a.enabled
+  ).length;
+
+  return (
+    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 pb-24">
+      {/* --- HEADER --- */}
+      <div className="flex items-center gap-4 mb-10">
+        <button
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+          onClick={() => setSettingsView("main")}
+        >
+          <HiOutlineArrowLeft className="w-6 h-6" />
+        </button>
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900">
+            Configuración de Monitoreo
+          </h2>
+          <p className="text-sm text-slate-500">
+            Gestiona las reglas de incidentes críticos.
+          </p>
+        </div>
+      </div>
+
+      {/* --- STATUS HEADER --- */}
+      <div className="flex items-center justify-between mb-6 px-2">
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+          ESTADO ACTUAL
+        </span>
+        <div className="flex gap-6">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
+            <span className="text-sm font-medium text-slate-700">
+              {activeCount} Activas
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+            <span className="text-sm font-medium text-slate-700">
+              {criticalCount} Críticas
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* --- LISTA DE ALERTAS --- */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        {alerts.map((alert, index) => {
+          const styles = getSeverityStyles(alert.severity);
+
+          return (
+            <div
+              key={alert.id}
+              className={`p-6 flex flex-col md:flex-row items-start md:items-center gap-6 hover:bg-slate-50/50 transition-colors ${
+                index !== alerts.length - 1 ? "border-b border-slate-100" : ""
+              }`}
+            >
+              {/* 1. Estado e Icono */}
+              <div className="flex items-center gap-4 shrink-0 mt-1 md:mt-0">
+                <div className={`w-2.5 h-2.5 rounded-full ${styles.dot}`}></div>
+                <div className="text-slate-500">{getIcon(alert.iconType)}</div>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <h3 className="text-base font-bold text-slate-900">
+                    {alert.title}
+                  </h3>
+                  <HiOutlineInformationCircle className="w-4 h-4 text-slate-400 cursor-help" />
+                  <span
+                    className={`px-2 py-0.5 rounded text-xs font-medium border ${styles.badge}`}
+                  >
+                    {styles.label}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-500 mb-3 leading-relaxed">
+                  {alert.desc}
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      alert.enabled ? "bg-emerald-500" : "bg-slate-300"
+                    }`}
+                  ></div>
+                  <span
+                    className={`text-xs font-bold tracking-wide ${
+                      alert.enabled ? "text-emerald-600" : "text-slate-400"
+                    }`}
+                  >
+                    {alert.enabled ? "HABILITADA" : "DESHABILITADA"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-5 shrink-0 w-full md:w-auto justify-between md:justify-end mt-2 md:mt-0">
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-white hover:border-slate-300 transition-all">
+                  <HiOutlinePlay className="w-4 h-4" />
+                  Probar
+                </button>
+
+                <ToggleSwitch
+                  checked={alert.enabled}
+                  onChange={() => toggleAlert(alert.id)}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
