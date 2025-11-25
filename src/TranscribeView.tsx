@@ -316,10 +316,14 @@ export default function TranscribeView({
   };
 
   return (
-    <div>
-      <h2>Transcribir Documento</h2>
+    <div className="w-full max-w-4xl mx-auto px-6 py-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Transcribir Documento</h2>
       <div
-        className={`file-drop-zone ${isDragging ? "drag-over" : ""}`}
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+          isDragging
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+        }`}
         onDrop={handleDrop}
         onDragOver={handleDragEvents}
         onDragEnter={handleDragEvents}
@@ -340,19 +344,12 @@ export default function TranscribeView({
           disabled={isReadingFile}
         />
         {isReadingFile ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <span className="loader"></span>
-            <span>Procesando PDF...</span>
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-gray-600">Procesando PDF...</span>
           </div>
         ) : (
-          <p>
+          <p className="text-gray-600">
             Arrastra y suelta un archivo PDF aquí, o haz clic para seleccionar
             uno.
           </p>
@@ -361,23 +358,38 @@ export default function TranscribeView({
 
       {pdfFile && !isReadingFile && (
         <>
-          <div className="file-info">
-            <strong>Archivo:</strong> {pdfFile.name} ({totalPages} páginas)
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg text-left">
+            <strong className="text-gray-900">Archivo:</strong>{" "}
+            <span className="text-gray-700">
+              {pdfFile.name} ({totalPages} páginas)
+            </span>
           </div>
           {pageImages.length > 0 && (
-            <div className="pdf-preview">
+            <div className="mt-6 max-h-96 overflow-y-auto grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-4 p-4 border border-gray-200 rounded-lg">
               {pageImages.map((src, index) => (
-                <div key={index} className="page-preview">
-                  <img src={src} alt={`Página ${index + 1}`} />
-                  <div className="page-number">{index + 1}</div>
+                <div
+                  key={index}
+                  className="border border-gray-200 rounded overflow-hidden relative"
+                >
+                  <img
+                    src={src}
+                    alt={`Página ${index + 1}`}
+                    className="w-full h-auto block"
+                  />
+                  <div className="absolute bottom-1 right-1 bg-black bg-opacity-60 text-white text-xs px-1.5 py-0.5 rounded">
+                    {index + 1}
+                  </div>
                 </div>
               ))}
             </div>
           )}
 
-          <div className="controls">
-            <div className="form-group">
-              <label htmlFor="transcription-name">
+          <div className="mt-6 flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="transcription-name"
+                className="text-sm font-medium text-gray-700"
+              >
                 Nombre de la Transcripción
               </label>
               <input
@@ -387,22 +399,29 @@ export default function TranscribeView({
                 onChange={(e) => setTranscriptionName(e.target.value)}
                 placeholder="Ej: Resumen de reunión"
                 disabled={isProcessing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
-            <div className="form-group">
-              <label>Proveedor de Transcripción</label>
-              <div className="provider-selector">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">
+                Proveedor de Transcripción
+              </label>
+              <div className="flex gap-2">
                 <button
-                  className={`button ${
-                    provider === "gemini" ? "" : "secondary"
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    provider === "gemini"
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                   onClick={() => setProvider("gemini")}
                 >
                   Google Gemini
                 </button>
                 <button
-                  className={`button ${
-                    provider === "openai" ? "" : "secondary"
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    provider === "openai"
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                   onClick={() => setProvider("openai")}
                 >
@@ -410,8 +429,11 @@ export default function TranscribeView({
                 </button>
               </div>
             </div>
-            <div className="form-group">
-              <label htmlFor="page-selection">
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="page-selection"
+                className="text-sm font-medium text-gray-700"
+              >
                 Páginas a transcribir (ej: 1-3, 5, 8):
               </label>
               <input
@@ -420,45 +442,49 @@ export default function TranscribeView({
                 value={pageSelection}
                 onChange={(e) => setPageSelection(e.target.value)}
                 disabled={transcribeAll || isProcessing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <div className="checkbox-group">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="transcribe-all"
                   checked={transcribeAll}
                   onChange={(e) => setTranscribeAll(e.target.checked)}
                   disabled={isProcessing}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="transcribe-all">
+                <label
+                  htmlFor="transcribe-all"
+                  className="text-sm text-gray-700 cursor-pointer"
+                >
                   Transcribir todo el documento
                 </label>
               </div>
 
-              <div className="checkbox-group">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="translate-mode"
                   checked={translateMode}
                   onChange={(e) => setTranslateMode(e.target.checked)}
                   disabled={isProcessing}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="translate-mode">
+                <label
+                  htmlFor="translate-mode"
+                  className="text-sm text-gray-700 cursor-pointer"
+                >
                   Traducción Inglés -{">"} Español
                 </label>
               </div>
             </div>
 
             {estimatedCost && (
-              <div className="cost-estimation">
-                <strong>Costo Estimado:</strong> {estimatedCost}
+              <div className="text-center p-3 mb-2 bg-blue-50 rounded-lg text-sm text-gray-600">
+                <strong className="text-gray-900">Costo Estimado:</strong>{" "}
+                {estimatedCost}
               </div>
             )}
 
@@ -470,11 +496,12 @@ export default function TranscribeView({
                 pagesToTranscribe.length === 0 ||
                 (provider === "openai" && !apiKeys.openai)
               }
-              className="button"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isProcessing ? (
                 <>
-                  <span className="loader"></span> Procesando...
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Procesando...
                 </>
               ) : (
                 "Transcribir"
@@ -484,12 +511,16 @@ export default function TranscribeView({
         </>
       )}
 
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          {error}
+        </div>
+      )}
 
       {isProcessing && (
-        <div className="progress-bar">
+        <div className="mt-6 w-full bg-gray-200 rounded-full overflow-hidden h-2.5">
           <div
-            className="progress-bar-inner"
+            className="h-full bg-blue-600 transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>

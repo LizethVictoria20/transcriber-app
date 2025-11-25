@@ -274,7 +274,7 @@ export default function TranscribeView({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 font-sans">
+    <div className="bg-slate-50 py-12 px-4 sm:px-6 font-sans">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Cabecera */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
