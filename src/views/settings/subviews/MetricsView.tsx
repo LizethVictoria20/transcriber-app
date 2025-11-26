@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HiOutlineArrowLeft,
   HiOutlineChartBar,
@@ -9,17 +10,16 @@ import {
   HiSparkles,
   HiOutlineExclamationTriangle,
 } from "react-icons/hi2";
-import type { TranscriptionItem, SettingsViewType } from "../../../types";
+import type { TranscriptionItem } from "../../../types";
 
 interface MetricsViewProps {
   transcriptions: TranscriptionItem[];
-  setSettingsView: (view: SettingsViewType) => void;
 }
 
 export default function MetricsView({
   transcriptions,
-  setSettingsView,
 }: MetricsViewProps) {
+  const navigate = useNavigate();
   const metrics = useMemo(() => {
     const totalTranscriptions = transcriptions.length;
     if (totalTranscriptions === 0) {
@@ -70,7 +70,7 @@ export default function MetricsView({
       <div className="flex items-center gap-4 mb-8">
         <button
           className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200"
-          onClick={() => setSettingsView("main")}
+          onClick={() => navigate("/settings")}
           title="Volver al menú"
         >
           <HiOutlineArrowLeft className="w-6 h-6" />

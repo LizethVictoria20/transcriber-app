@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HiOutlineArrowLeft,
   HiOutlineBookOpen,
@@ -8,19 +9,18 @@ import {
   HiOutlineDocumentText,
   HiOutlinePencilSquare,
 } from "react-icons/hi2";
-import type { SotSettings, SettingsViewType } from "../../../types";
+import type { SotSettings } from "../../../types";
 
 interface SotViewProps {
   sotSettings: SotSettings;
   setSotSettings: (settings: SotSettings) => void;
-  setSettingsView: (view: SettingsViewType) => void;
 }
 
 export default function SotView({
   sotSettings,
   setSotSettings,
-  setSettingsView,
 }: SotViewProps) {
+  const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState<SotSettings>(sotSettings);
   const [saved, setSaved] = useState(false);
 
@@ -36,7 +36,7 @@ export default function SotView({
       <div className="flex items-center gap-4 mb-8">
         <button
           className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200"
-          onClick={() => setSettingsView("main")}
+          onClick={() => navigate("/settings")}
           title="Volver al menú"
         >
           <HiOutlineArrowLeft className="w-6 h-6" />

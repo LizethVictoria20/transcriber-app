@@ -138,7 +138,7 @@ export default function HistoryView({
               </div>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
                 className="block w-full pl-9 pr-8 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer"
               >
                 <option value="all">Todos</option>
@@ -167,7 +167,7 @@ export default function HistoryView({
             <div className="relative min-w-[140px] flex-1 sm:flex-none">
               <select
                 value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value)}
+                onChange={(e) => setSortOrder(e.target.value as SortOrder)}
                 className="block w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer"
               >
                 <option value="date-desc">Más Reciente</option>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HiOutlineArrowLeft,
   HiOutlineChatBubbleBottomCenterText,
@@ -10,19 +11,18 @@ import {
   HiOutlineInformationCircle,
   HiSparkles,
 } from "react-icons/hi2";
-import type { Prompts, SettingsViewType } from "../../../types";
+import type { Prompts } from "../../../types";
 
 interface PromptSettingsViewProps {
   prompts: Prompts;
   setPrompts: (prompts: Prompts) => void;
-  setSettingsView: (view: SettingsViewType) => void;
 }
 
 export default function PromptSettingsView({
   prompts,
   setPrompts,
-  setSettingsView,
 }: PromptSettingsViewProps) {
+  const navigate = useNavigate();
   const [localPrompts, setLocalPrompts] = useState<Prompts>(prompts);
   const [saved, setSaved] = useState(false);
 
@@ -86,7 +86,7 @@ export default function PromptSettingsView({
       <div className="flex items-center gap-4 mb-8">
         <button
           className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200"
-          onClick={() => setSettingsView("main")}
+          onClick={() => navigate("/settings")}
           title="Volver al menú"
         >
           <HiOutlineArrowLeft className="w-6 h-6" />

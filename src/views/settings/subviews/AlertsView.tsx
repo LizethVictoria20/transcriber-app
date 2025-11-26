@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HiOutlineArrowLeft,
   HiOutlineCog,
@@ -7,10 +8,10 @@ import {
   HiOutlineChartBar,
   HiOutlineLockClosed,
 } from "react-icons/hi2";
-import type { SettingsViewType } from "../../../types";
 
 interface AlertsViewProps {
-  setSettingsView: (view: SettingsViewType) => void;
+  alertSettings: any;
+  setAlertSettings: (settings: any) => void;
 }
 
 type Severity = "critical" | "high" | "medium";
@@ -189,7 +190,8 @@ const getIcon = (type: IconType) => {
   }
 };
 
-export default function AlertsView({ setSettingsView }: AlertsViewProps) {
+export default function AlertsView({ }: AlertsViewProps) {
+  const navigate = useNavigate();
   const [alerts, setAlerts] = useState(initialAlertsData);
 
   const toggleAlert = (id: number) => {
@@ -212,7 +214,7 @@ export default function AlertsView({ setSettingsView }: AlertsViewProps) {
       <div className="flex items-center gap-4 mb-10">
         <button
           className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
-          onClick={() => setSettingsView("main")}
+          onClick={() => navigate("/settings")}
         >
           <HiOutlineArrowLeft className="w-6 h-6" />
         </button>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import type { SettingsViewType, ApiKeys } from "../../../types";
+import { useNavigate } from "react-router-dom";
+import type { ApiKeys } from "../../../types";
 import {
   HiOutlineArrowLeft,
   HiOutlineShieldCheck,
@@ -14,14 +15,13 @@ import {
 interface ApiSettingsViewProps {
   apiKeys: ApiKeys;
   setApiKeys: (keys: ApiKeys) => void;
-  setSettingsView: (view: SettingsViewType) => void;
 }
 
 export default function ApiSettingsView({
   apiKeys,
   setApiKeys,
-  setSettingsView,
 }: ApiSettingsViewProps) {
+  const navigate = useNavigate();
   const [localKeys, setLocalKeys] = useState<ApiKeys>(apiKeys);
   const [showOpenAIKey, setShowOpenAIKey] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -37,7 +37,7 @@ export default function ApiSettingsView({
       {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-8">
         <button
-          onClick={() => setSettingsView("main")}
+          onClick={() => navigate("/settings")}
           className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer"
         >
           <HiOutlineArrowLeft className="w-6 h-6" />

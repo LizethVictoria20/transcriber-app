@@ -1,5 +1,5 @@
 import React from "react";
-import type { SettingsViewType } from "../../types";
+import { Link } from "react-router-dom";
 import {
   HiOutlineKey,
   HiOutlineChatBubbleBottomCenterText,
@@ -14,13 +14,11 @@ import {
 interface SettingsMenuProps {
   theme: string;
   setTheme: (theme: string) => void;
-  setSettingsView: (view: SettingsViewType) => void;
 }
 
 export default function SettingsMenu({
   theme,
   setTheme,
-  setSettingsView,
 }: SettingsMenuProps) {
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-gray-100">
@@ -42,8 +40,8 @@ export default function SettingsMenu({
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* API Keys Card */}
-            <div
-              onClick={() => setSettingsView("api")}
+            <Link
+              to="/settings/api"
               className="group bg-white dark:bg-gray-800 p-5 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
@@ -58,11 +56,11 @@ export default function SettingsMenu({
                   otros servicios.
                 </p>
               </div>
-            </div>
+            </Link>
 
             {/* Prompts Card */}
-            <div
-              onClick={() => setSettingsView("prompts")}
+            <Link
+              to="/settings/prompts"
               className="group bg-white dark:bg-gray-800 p-5 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-purple-300 dark:hover:border-purple-500 transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 transition-colors">
@@ -77,7 +75,7 @@ export default function SettingsMenu({
                   precisión de la IA.
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </section>
 
@@ -88,8 +86,8 @@ export default function SettingsMenu({
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Metrics Card */}
-            <div
-              onClick={() => setSettingsView("metrics")}
+            <Link
+              to="/settings/metrics"
               className="group bg-white dark:bg-gray-800 p-5 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-500 transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
@@ -104,11 +102,11 @@ export default function SettingsMenu({
                   uso.
                 </p>
               </div>
-            </div>
+            </Link>
 
             {/* Alerts Card */}
-            <div
-              onClick={() => setSettingsView("alerts")}
+            <Link
+              to="/settings/alerts"
               className="group bg-white dark:bg-gray-800 p-5 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-orange-300 dark:hover:border-orange-500 transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="p-3 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl group-hover:bg-orange-100 dark:group-hover:bg-orange-900/50 transition-colors">
@@ -123,7 +121,7 @@ export default function SettingsMenu({
                   sistema.
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </section>
 
@@ -134,8 +132,8 @@ export default function SettingsMenu({
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Preferences Card */}
-            <div
-              onClick={() => setSettingsView("systemPrefs")}
+            <Link
+              to="/settings/system-preferences"
               className="group bg-white dark:bg-gray-800 p-5 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-slate-400 dark:hover:border-gray-500 transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="p-3 bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-300 rounded-xl group-hover:bg-slate-200 dark:group-hover:bg-gray-600 transition-colors">
@@ -150,11 +148,11 @@ export default function SettingsMenu({
                   retención de datos.
                 </p>
               </div>
-            </div>
+            </Link>
 
             {/* Documentation Card */}
-            <div
-              onClick={() => setSettingsView("sot")}
+            <Link
+              to="/settings/sot"
               className="group bg-white dark:bg-gray-800 p-5 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-500 transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
@@ -169,7 +167,7 @@ export default function SettingsMenu({
                   proyecto.
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </section>
 

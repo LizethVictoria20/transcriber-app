@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   HiDocumentText,
@@ -9,17 +10,11 @@ import {
 
 import { IoLogOutOutline } from "react-icons/io5";
 
-interface NavbarProps {
-  currentView: string;
-  onNavigate: (view: string) => void;
-}
-
-export default function Navbar({ currentView, onNavigate }: NavbarProps) {
+export default function Navbar() {
   const { user, signOut } = useAuth();
 
   // Función para estilos de botones de navegación
-  const getNavLinkClass = (viewName: string) => {
-    const isActive = currentView === viewName;
+  const getNavLinkClass = ({ isActive }: { isActive: boolean }) => {
     return `flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 cursor-pointer ${
       isActive
         ? "text-blue-700 bg-blue-50 shadow-sm ring-1 ring-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20" // Estado Activo (Light/Dark)
@@ -31,9 +26,9 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-gray-200/60 bg-white/90 backdrop-blur-md transition-all dark:bg-[#111827]/90 dark:border-gray-800">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 md:px-8">
         {/* --- LOGO & BRANDING --- */}
-        <div
+        <NavLink
+          to="/transcribe"
           className="flex items-center gap-3.5 select-none cursor-pointer group"
-          onClick={() => onNavigate("transcribe")}
         >
           {/* Icono Logo */}
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-lg shadow-blue-600/20 transition-transform group-hover:scale-105 dark:shadow-blue-900/40">
@@ -49,51 +44,63 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
               IA para Procesos Judiciales
             </p>
           </div>
-        </div>
+        </NavLink>
 
         {/* --- NAVEGACIÓN CENTRAL --- */}
         <nav className="hidden md:flex items-center gap-2 bg-white/50 p-1.5 rounded-2xl border border-gray-100 shadow-sm dark:bg-gray-800/50 dark:border-gray-700">
-          <button
-            onClick={() => onNavigate("transcribe")}
-            className={getNavLinkClass("transcribe")}
+          <NavLink
+            to="/transcribe"
+            className={getNavLinkClass}
           >
-            <HiOutlineDocumentText
-              className={`w-5 h-5 ${
-                currentView === "transcribe"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : ""
-              }`}
-            />
-            Transcribir
-          </button>
+            {({ isActive }) => (
+              <>
+                <HiOutlineDocumentText
+                  className={`w-5 h-5 ${
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400"
+                      : ""
+                  }`}
+                />
+                Transcribir
+              </>
+            )}
+          </NavLink>
 
-          <button
-            onClick={() => onNavigate("history")}
-            className={getNavLinkClass("history")}
+          <NavLink
+            to="/history"
+            className={getNavLinkClass}
           >
-            <HiOutlineClipboardDocumentList
-              className={`w-5 h-5 ${
-                currentView === "history"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : ""
-              }`}
-            />
-            Mis Expedientes
-          </button>
+            {({ isActive }) => (
+              <>
+                <HiOutlineClipboardDocumentList
+                  className={`w-5 h-5 ${
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400"
+                      : ""
+                  }`}
+                />
+                Mis Expedientes
+              </>
+            )}
+          </NavLink>
 
-          <button
-            onClick={() => onNavigate("settings")}
-            className={getNavLinkClass("settings")}
+          <NavLink
+            to="/settings"
+            className={getNavLinkClass}
           >
-            <HiOutlineCog6Tooth
-              className={`w-5 h-5 ${
-                currentView === "settings"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : ""
-              }`}
-            />
-            Configuración
-          </button>
+            {({ isActive }) => (
+              <>
+                <HiOutlineCog6Tooth
+                  className={`w-5 h-5 ${
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400"
+                      : ""
+                  }`}
+                />
+                Configuración
+              </>
+            )}
+          </NavLink>
         </nav>
 
         {/* --- PERFIL DE USUARIO --- */}

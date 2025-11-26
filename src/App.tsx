@@ -1,12 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import MainLayout from './layouts/MainLayout';
-import TranscribeView from './views/transcribe/TranscribeView';
-import HistoryView from './views/history/HistoryView';
-import TranscriptionDetailView from './views/history/TranscriptionDetailView';
-import SettingsContainer from './views/settings/SettingsContainer';
-import LoginView from './views/auth/LoginView';
+import AppRoutes from './routes';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { dbService } from './services/database';
 import type { TranscriptionItem, Prompts, ApiKeys, AlertSettings, SotSettings, SystemPreferences } from './types';
@@ -49,7 +45,7 @@ const defaultSystemPreferences: SystemPreferences = {
 
 function AppContent() {
     const { user, loading } = useAuth();
-    const [view, setView] = useState('transcribe');
+    const navigate = useNavigate();
     
     // Transcriptions now come from DB, no local storage sync needed for the list itself
     const [transcriptions, setTranscriptions] = useState<TranscriptionItem[]>([]);
@@ -99,22 +95,21 @@ function AppContent() {
         );
     }
 
-    if (!user) {
-        return <LoginView />;
-    }
-
-    const handleTabChange = (newView: string) => {
-        setView(newView);
-        if (newView !== 'history') {
-            setSelectedTranscription(null);
-        }
-    }
-
     const handleTranscriptionComplete = (newTranscription: TranscriptionItem) => {
         // Add to local state immediately for UI responsiveness
         setTranscriptions(prev => [newTranscription, ...prev]);
         setSelectedTranscription(newTranscription);
-        setView('history');
+        navigate('/history');
+    };
+
+    const handleSelectTranscription = (item: TranscriptionItem) => {
+        setSelectedTranscription(item);
+        navigate(`/history/${item.id}`);
+    };
+
+    const handleBackFromDetail = () => {
+        setSelectedTranscription(null);
+        navigate('/history');
     };
 
     const handleUpdateTranscription = async (id: number, newText: string) => {
@@ -160,57 +155,39 @@ function AppContent() {
         }
     }
 
-    const renderHistory = () => {
-        if (selectedTranscription) {
-            return (
-                <TranscriptionDetailView 
-                    item={selectedTranscription} 
-                    onBack={() => setSelectedTranscription(null)} 
-                    onUpdateTranscription={handleUpdateTranscription}
-                    onUpdateTags={handleUpdateTags}
-                    apiKeys={apiKeys}
-                    prompts={prompts}
-                />
-            );
-        }
-        return (
-            <HistoryView 
-                transcriptions={transcriptions} 
-                clearHistory={clearHistory} 
-                onSelectTranscription={setSelectedTranscription}
-            />
-        );
-    };
-
     return (
-        <MainLayout currentView={view} onNavigate={handleTabChange}>
-            {view === 'transcribe' && <TranscribeView onTranscriptionComplete={handleTranscriptionComplete} apiKeys={apiKeys} prompts={prompts} />}
-            {view === 'history' && (isLoadingData ? <p style={{padding:'2rem', textAlign:'center'}}>Cargando datos...</p> : renderHistory())}
-            {view === 'settings' && (
-                <SettingsContainer 
-                    theme={theme}
-                    setTheme={setTheme}
-                    transcriptions={transcriptions}
-                    apiKeys={apiKeys}
-                    setApiKeys={setApiKeys}
-                    prompts={prompts}
-                    setPrompts={setPrompts}
-                    alertSettings={alertSettings}
-                    setAlertSettings={setAlertSettings}
-                    sotSettings={sotSettings}
-                    setSotSettings={setSotSettings}
-                    systemPreferences={systemPreferences}
-                    setSystemPreferences={setSystemPreferences}
-                />
-            )}
-        </MainLayout>
+        <AppRoutes
+            transcriptions={transcriptions}
+            isLoadingData={isLoadingData}
+            selectedTranscription={selectedTranscription}
+            theme={theme}
+            apiKeys={apiKeys}
+            prompts={prompts}
+            alertSettings={alertSettings}
+            sotSettings={sotSettings}
+            systemPreferences={systemPreferences}
+            setTheme={setTheme}
+            setApiKeys={setApiKeys}
+            setPrompts={setPrompts}
+            setAlertSettings={setAlertSettings}
+            setSotSettings={setSotSettings}
+            setSystemPreferences={setSystemPreferences}
+            handleTranscriptionComplete={handleTranscriptionComplete}
+            handleUpdateTranscription={handleUpdateTranscription}
+            handleUpdateTags={handleUpdateTags}
+            clearHistory={clearHistory}
+            onSelectTranscription={handleSelectTranscription}
+            onBack={handleBackFromDetail}
+        />
     );
 }
 
 export default function App() {
     return (
-        <AuthProvider>
-            <AppContent />
-        </AuthProvider>
+        <BrowserRouter>
+            <AuthProvider>
+                <AppContent />
+            </AuthProvider>
+        </BrowserRouter>
     );
 }
