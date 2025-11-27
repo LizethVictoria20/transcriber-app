@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   HiOutlineArrowLeft,
@@ -7,123 +7,113 @@ import {
   HiOutlinePlay,
   HiOutlineChartBar,
   HiOutlineLockClosed,
+  HiCheckCircle,
 } from "react-icons/hi2";
+import type { AlertSettings } from "../../../types";
 
 interface AlertsViewProps {
-  alertSettings: any;
-  setAlertSettings: (settings: any) => void;
+  alertSettings: AlertSettings;
+  setAlertSettings: (settings: AlertSettings) => void;
 }
 
 type Severity = "critical" | "high" | "medium";
 type IconType = "cog" | "chart" | "lock";
+type AlertKey = keyof AlertSettings;
 
 interface AlertItem {
-  id: number;
+  key: AlertKey;
   title: string;
   desc: string;
   severity: Severity;
-  enabled: boolean;
   iconType: IconType;
 }
 
-const initialAlertsData: AlertItem[] = [
+const alertsConfig: AlertItem[] = [
   // CRÍTICOS (Rojos)
   {
-    id: 1,
+    key: "databaseUnavailable",
     title: "Base de datos no disponible",
     desc: "Alerta crítica cuando PostgreSQL no responde o está desconectado",
     severity: "critical",
-    enabled: true,
     iconType: "cog",
   },
   {
-    id: 2,
+    key: "workerFailure",
     title: "Falla en workers de procesamiento",
     desc: "Notifica cuando los workers principales se desconectan o fallan",
     severity: "critical",
-    enabled: true,
     iconType: "cog",
   },
   {
-    id: 3,
+    key: "memoryExhausted",
     title: "Memoria del sistema agotada",
     desc: "Alerta cuando el uso de memoria supera el 90% disponible",
     severity: "critical",
-    enabled: true,
     iconType: "cog",
   },
   {
-    id: 4,
+    key: "diskSpaceCritical",
     title: "Espacio en disco críticamente bajo",
     desc: "Notifica cuando queda menos del 10% de espacio disponible",
     severity: "critical",
-    enabled: true,
     iconType: "cog",
   },
   {
-    id: 5,
+    key: "aiApisUnavailable",
     title: "APIs de IA no disponibles",
     desc: "Alerta cuando OpenAI o Google Gemini devuelven errores continuos",
     severity: "critical",
-    enabled: true,
     iconType: "cog",
   },
   {
-    id: 6,
+    key: "documentProcessingFailure",
     title: "Falla en procesamiento de documentos",
     desc: "Error crítico en la cadena de transcripción de PDFs",
     severity: "critical",
-    enabled: true,
     iconType: "cog",
   },
   // ALTOS (Naranjas)
   {
-    id: 7,
+    key: "responseTimeSlow",
     title: "Tiempo de respuesta extremadamente lento",
     desc: "Alerta cuando las respuestas superan 30 segundos consistentemente",
     severity: "high",
-    enabled: true,
     iconType: "chart",
   },
   {
-    id: 8,
+    key: "transcriptionQueueBlocked",
     title: "Cola de transcripción bloqueada",
     desc: "Trabajos de transcripción acumulados sin procesar por más de 1 hora",
     severity: "high",
-    enabled: true,
     iconType: "chart",
   },
   {
-    id: 9,
+    key: "aiApiErrors",
     title: "Errores repetidos en APIs de IA",
     desc: "Más del 20% de solicitudes a proveedores de IA fallan",
     severity: "high",
-    enabled: true,
     iconType: "cog",
   },
   {
-    id: 10,
+    key: "fileUploadFailures",
     title: "Fallas en carga de archivos",
     desc: "Usuarios no pueden subir PDFs correctamente al sistema",
     severity: "high",
-    enabled: true,
     iconType: "cog",
   },
   // MEDIOS (Amarillos)
   {
-    id: 11,
+    key: "sslCertificateExpiry",
     title: "Certificados SSL próximos a vencer",
     desc: "Certificados de seguridad vencen en menos de 30 días",
     severity: "medium",
-    enabled: false,
     iconType: "lock",
   },
   {
-    id: 12,
+    key: "highCpuUsage",
     title: "Uso elevado de CPU",
     desc: "El procesador supera el 85% de uso por más de 15 minutos",
     severity: "medium",
-    enabled: false,
     iconType: "chart",
   },
 ];
@@ -190,26 +180,91 @@ const getIcon = (type: IconType) => {
   }
 };
 
-export default function AlertsView({ }: AlertsViewProps) {
+export default function AlertsView({ alertSettings, setAlertSettings }: AlertsViewProps) {
   const navigate = useNavigate();
-  const [alerts, setAlerts] = useState(initialAlertsData);
+  const [testingAlert, setTestingAlert] = useState<string | null>(null);
+  const [showTestNotification, setShowTestNotification] = useState(false);
+  const [testMessage, setTestMessage] = useState("");
 
-  const toggleAlert = (id: number) => {
-    setAlerts(
-      alerts.map((alert) =>
-        alert.id === id ? { ...alert, enabled: !alert.enabled } : alert
-      )
-    );
+  const toggleAlert = (key: AlertKey) => {
+    setAlertSettings({
+      ...alertSettings,
+      [key]: {
+        ...alertSettings[key],
+        enabled: !alertSettings[key].enabled,
+      },
+    });
+  };
+
+  const testAlert = (alert: AlertItem) => {
+    const key = alert.key;
+    setTestingAlert(key);
+    
+    // Simular prueba de alerta
+    setTimeout(() => {
+      const now = new Date().toISOString();
+      
+      // Actualizar configuración con última activación y contador
+      setAlertSettings({
+        ...alertSettings,
+        [key]: {
+          ...alertSettings[key],
+          lastTriggered: now,
+          triggerCount: alertSettings[key].triggerCount + 1,
+        },
+      });
+
+      // Mostrar notificación de prueba
+      setTestMessage(`✓ Alerta "${alert.title}" probada exitosamente`);
+      setShowTestNotification(true);
+      
+      setTestingAlert(null);
+      
+      // Ocultar notificación después de 3 segundos
+      setTimeout(() => {
+        setShowTestNotification(false);
+      }, 3000);
+    }, 1000);
   };
 
   // Contadores dinámicos
-  const activeCount = alerts.filter((a) => a.enabled).length;
-  const criticalCount = alerts.filter(
-    (a) => a.severity === "critical" && a.enabled
+  const activeCount = alertsConfig.filter((alert) => alertSettings[alert.key].enabled).length;
+  const criticalCount = alertsConfig.filter(
+    (alert) => alert.severity === "critical" && alertSettings[alert.key].enabled
   ).length;
+
+  const formatLastTriggered = (dateString?: string) => {
+    if (!dateString) return "Nunca";
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "Hace un momento";
+    if (diffMins < 60) return `Hace ${diffMins} min`;
+    if (diffHours < 24) return `Hace ${diffHours}h`;
+    if (diffDays < 7) return `Hace ${diffDays}d`;
+    
+    return date.toLocaleDateString('es-ES', { 
+      day: '2-digit', 
+      month: '2-digit',
+      year: '2-digit'
+    });
+  };
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 pb-24">
+      {/* Test Notification */}
+      {showTestNotification && (
+        <div className="fixed top-4 right-4 z-50 bg-emerald-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <HiCheckCircle className="w-6 h-6" />
+          <span className="font-medium">{testMessage}</span>
+        </div>
+      )}
+
       {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-10">
         <button
@@ -223,7 +278,7 @@ export default function AlertsView({ }: AlertsViewProps) {
             Configuración de Monitoreo
           </h2>
           <p className="text-sm text-slate-500">
-            Gestiona las reglas de incidentes críticos.
+            Gestiona las reglas de incidentes críticos y recibe notificaciones en tiempo real.
           </p>
         </div>
       </div>
@@ -251,14 +306,16 @@ export default function AlertsView({ }: AlertsViewProps) {
 
       {/* --- LISTA DE ALERTAS --- */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        {alerts.map((alert, index) => {
+        {alertsConfig.map((alert, index) => {
           const styles = getSeverityStyles(alert.severity);
+          const config = alertSettings[alert.key];
+          const isTesting = testingAlert === alert.key;
 
           return (
             <div
-              key={alert.id}
+              key={alert.key}
               className={`p-6 flex flex-col md:flex-row items-start md:items-center gap-6 hover:bg-slate-50/50 transition-colors ${
-                index !== alerts.length - 1 ? "border-b border-slate-100" : ""
+                index !== alertsConfig.length - 1 ? "border-b border-slate-100" : ""
               }`}
             >
               {/* 1. Estado e Icono */}
@@ -283,36 +340,76 @@ export default function AlertsView({ }: AlertsViewProps) {
                   {alert.desc}
                 </p>
 
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      alert.enabled ? "bg-emerald-500" : "bg-slate-300"
-                    }`}
-                  ></div>
-                  <span
-                    className={`text-xs font-bold tracking-wide ${
-                      alert.enabled ? "text-emerald-600" : "text-slate-400"
-                    }`}
-                  >
-                    {alert.enabled ? "HABILITADA" : "DESHABILITADA"}
-                  </span>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        config.enabled ? "bg-emerald-500" : "bg-slate-300"
+                      }`}
+                    ></div>
+                    <span
+                      className={`text-xs font-bold tracking-wide ${
+                        config.enabled ? "text-emerald-600" : "text-slate-400"
+                      }`}
+                    >
+                      {config.enabled ? "HABILITADA" : "DESHABILITADA"}
+                    </span>
+                  </div>
+
+                  {/* Información de activación */}
+                  <div className="flex items-center gap-3 text-xs text-slate-500">
+                    <span>
+                      <span className="font-semibold">Última activación:</span>{" "}
+                      {formatLastTriggered(config.lastTriggered)}
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span>
+                      <span className="font-semibold">Activaciones:</span>{" "}
+                      {config.triggerCount}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-5 shrink-0 w-full md:w-auto justify-between md:justify-end mt-2 md:mt-0">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-white hover:border-slate-300 transition-all">
-                  <HiOutlinePlay className="w-4 h-4" />
-                  Probar
+                <button 
+                  onClick={() => testAlert(alert)}
+                  disabled={isTesting || !config.enabled}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    isTesting 
+                      ? "border-slate-200 text-slate-400 cursor-wait bg-slate-50"
+                      : !config.enabled
+                      ? "border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50"
+                      : "border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300"
+                  }`}
+                >
+                  <HiOutlinePlay className={`w-4 h-4 ${isTesting ? 'animate-spin' : ''}`} />
+                  {isTesting ? "Probando..." : "Probar"}
                 </button>
 
                 <ToggleSwitch
-                  checked={alert.enabled}
-                  onChange={() => toggleAlert(alert.id)}
+                  checked={config.enabled}
+                  onChange={() => toggleAlert(alert.key)}
                 />
               </div>
             </div>
           );
         })}
+      </div>
+
+      {/* Info adicional */}
+      <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+        <div className="flex gap-3">
+          <HiOutlineInformationCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+          <div className="text-sm text-blue-900">
+            <p className="font-semibold mb-1">Sobre las alertas de prueba</p>
+            <p className="text-blue-700">
+              El botón "Probar" simula la activación de cada alerta para verificar que el sistema 
+              de monitoreo funciona correctamente. Las alertas reales se activarán automáticamente 
+              cuando se cumplan las condiciones especificadas.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

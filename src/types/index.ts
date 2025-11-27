@@ -11,11 +11,28 @@ export interface Prompts {
   autoTagging: string;
 }
 
+export interface AlertConfig {
+  enabled: boolean;
+  lastTriggered?: string;
+  triggerCount: number;
+}
+
 export interface AlertSettings {
-  emailNotifications: boolean;
-  failureRate: boolean;
-  lowDiskSpace: boolean;
-  sslCertificateExpiry: boolean;
+  // Critical Alerts
+  databaseUnavailable: AlertConfig;
+  workerFailure: AlertConfig;
+  memoryExhausted: AlertConfig;
+  diskSpaceCritical: AlertConfig;
+  aiApisUnavailable: AlertConfig;
+  documentProcessingFailure: AlertConfig;
+  // High Severity
+  responseTimeSlow: AlertConfig;
+  transcriptionQueueBlocked: AlertConfig;
+  aiApiErrors: AlertConfig;
+  fileUploadFailures: AlertConfig;
+  // Medium Severity
+  sslCertificateExpiry: AlertConfig;
+  highCpuUsage: AlertConfig;
 }
 
 export interface SotSettings {

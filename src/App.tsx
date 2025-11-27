@@ -16,10 +16,21 @@ const defaultPrompts: Prompts = {
 };
 
 const defaultAlertSettings: AlertSettings = {
-    emailNotifications: true,
-    failureRate: true,
-    lowDiskSpace: false,
-    sslCertificateExpiry: true,
+    // Critical Alerts
+    databaseUnavailable: { enabled: true, triggerCount: 0 },
+    workerFailure: { enabled: true, triggerCount: 0 },
+    memoryExhausted: { enabled: true, triggerCount: 0 },
+    diskSpaceCritical: { enabled: true, triggerCount: 0 },
+    aiApisUnavailable: { enabled: true, triggerCount: 0 },
+    documentProcessingFailure: { enabled: true, triggerCount: 0 },
+    // High Severity
+    responseTimeSlow: { enabled: true, triggerCount: 0 },
+    transcriptionQueueBlocked: { enabled: true, triggerCount: 0 },
+    aiApiErrors: { enabled: true, triggerCount: 0 },
+    fileUploadFailures: { enabled: true, triggerCount: 0 },
+    // Medium Severity
+    sslCertificateExpiry: { enabled: false, triggerCount: 0 },
+    highCpuUsage: { enabled: false, triggerCount: 0 },
 };
 
 const defaultSotSettings: SotSettings = {
@@ -57,7 +68,7 @@ function AppContent() {
     const [theme, setTheme] = useLocalStorage<string>('theme', 'light');
     const [apiKeys, setApiKeys] = useLocalStorage<ApiKeys>('apiKeys', { openai: '' });
     const [prompts, setPrompts] = useLocalStorage<Prompts>('prompts', defaultPrompts);
-    const [alertSettings, setAlertSettings] = useLocalStorage<AlertSettings>('alertSettings', defaultAlertSettings);
+    const [alertSettings, setAlertSettings] = useLocalStorage<AlertSettings>('alertSettings_v2', defaultAlertSettings);
     const [sotSettings, setSotSettings] = useLocalStorage<SotSettings>('sotSettings', defaultSotSettings);
     const [systemPreferences, setSystemPreferences] = useLocalStorage<SystemPreferences>('systemPreferences_v2', defaultSystemPreferences);
 
