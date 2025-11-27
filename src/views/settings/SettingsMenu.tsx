@@ -21,7 +21,7 @@ export default function SettingsMenu({
   setTheme,
 }: SettingsMenuProps) {
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-gray-100">
+    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-gray-100 transition-colors">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
           Configuración del Sistema

@@ -256,10 +256,10 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 pb-24">
+    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100 pb-24">
       {/* Test Notification */}
       {showTestNotification && (
-        <div className="fixed top-4 right-4 z-50 bg-emerald-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+        <div className="fixed top-4 right-4 z-50 bg-emerald-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in dark:bg-emerald-600">
           <HiCheckCircle className="w-6 h-6" />
           <span className="font-medium">{testMessage}</span>
         </div>
@@ -268,16 +268,16 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
       {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-10">
         <button
-          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors dark:hover:bg-slate-800 dark:text-slate-300"
           onClick={() => navigate("/settings")}
         >
           <HiOutlineArrowLeft className="w-6 h-6" />
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
             Configuración de Monitoreo
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Gestiona las reglas de incidentes críticos y recibe notificaciones en tiempo real.
           </p>
         </div>
@@ -285,19 +285,19 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
 
       {/* --- STATUS HEADER --- */}
       <div className="flex items-center justify-between mb-6 px-2">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider dark:text-slate-400">
           ESTADO ACTUAL
         </span>
         <div className="flex gap-6">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
               {activeCount} Activas
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
               {criticalCount} Críticas
             </span>
           </div>
@@ -305,7 +305,7 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
       </div>
 
       {/* --- LISTA DE ALERTAS --- */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden dark:bg-gray-900 dark:border-slate-700">
         {alertsConfig.map((alert, index) => {
           const styles = getSeverityStyles(alert.severity);
           const config = alertSettings[alert.key];
@@ -314,29 +314,31 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
           return (
             <div
               key={alert.key}
-              className={`p-6 flex flex-col md:flex-row items-start md:items-center gap-6 hover:bg-slate-50/50 transition-colors ${
-                index !== alertsConfig.length - 1 ? "border-b border-slate-100" : ""
+              className={`p-6 flex flex-col md:flex-row items-start md:items-center gap-6 hover:bg-slate-50/50 dark:hover:bg-slate-800/60 transition-colors ${
+                index !== alertsConfig.length - 1 ? "border-b border-slate-100 dark:border-slate-800" : ""
               }`}
             >
               {/* 1. Estado e Icono */}
               <div className="flex items-center gap-4 shrink-0 mt-1 md:mt-0">
                 <div className={`w-2.5 h-2.5 rounded-full ${styles.dot}`}></div>
-                <div className="text-slate-500">{getIcon(alert.iconType)}</div>
+                <div className="text-slate-500 dark:text-slate-400">
+                  {getIcon(alert.iconType)}
+                </div>
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-50">
                     {alert.title}
                   </h3>
-                  <HiOutlineInformationCircle className="w-4 h-4 text-slate-400 cursor-help" />
+                  <HiOutlineInformationCircle className="w-4 h-4 text-slate-400 cursor-help dark:text-slate-500" />
                   <span
                     className={`px-2 py-0.5 rounded text-xs font-medium border ${styles.badge}`}
                   >
                     {styles.label}
                   </span>
                 </div>
-                <p className="text-sm text-slate-500 mb-3 leading-relaxed">
+                <p className="text-sm text-slate-500 mb-3 leading-relaxed dark:text-slate-400">
                   {alert.desc}
                 </p>
 
@@ -349,7 +351,9 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
                     ></div>
                     <span
                       className={`text-xs font-bold tracking-wide ${
-                        config.enabled ? "text-emerald-600" : "text-slate-400"
+                        config.enabled
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-slate-400 dark:text-slate-500"
                       }`}
                     >
                       {config.enabled ? "HABILITADA" : "DESHABILITADA"}
@@ -357,7 +361,7 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
                   </div>
 
                   {/* Información de activación */}
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                     <span>
                       <span className="font-semibold">Última activación:</span>{" "}
                       {formatLastTriggered(config.lastTriggered)}
@@ -376,11 +380,11 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
                   onClick={() => testAlert(alert)}
                   disabled={isTesting || !config.enabled}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                    isTesting 
-                      ? "border-slate-200 text-slate-400 cursor-wait bg-slate-50"
+                    isTesting
+                      ? "border-slate-200 text-slate-400 cursor-wait bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500"
                       : !config.enabled
-                      ? "border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50"
-                      : "border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300"
+                      ? "border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500"
+                      : "border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                   }`}
                 >
                   <HiOutlinePlay className={`w-4 h-4 ${isTesting ? 'animate-spin' : ''}`} />
@@ -398,12 +402,12 @@ export default function AlertsView({ alertSettings, setAlertSettings }: AlertsVi
       </div>
 
       {/* Info adicional */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+      <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg dark:bg-blue-950/40 dark:border-blue-900/70">
         <div className="flex gap-3">
           <HiOutlineInformationCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-900">
+          <div className="text-sm text-blue-900 dark:text-blue-100">
             <p className="font-semibold mb-1">Sobre las alertas de prueba</p>
-            <p className="text-blue-700">
+            <p className="text-blue-700 dark:text-blue-300">
               El botón "Probar" simula la activación de cada alerta para verificar que el sistema 
               de monitoreo funciona correctamente. Las alertas reales se activarán automáticamente 
               cuando se cumplan las condiciones especificadas.

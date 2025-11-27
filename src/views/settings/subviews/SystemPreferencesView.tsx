@@ -82,20 +82,20 @@ export default function SystemPreferencesView({
   );
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 font-sans text-slate-800 pb-32">
+    <div className="max-w-4xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100 pb-32">
       {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-8">
         <button
-          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200"
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200 dark:hover:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
           onClick={() => navigate("/settings")}
         >
           <HiOutlineArrowLeft className="w-6 h-6" />
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             Preferencias del Sistema
           </h2>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Ajustes globales de localización, límites y comportamiento
             operativo.
           </p>
@@ -104,27 +104,27 @@ export default function SystemPreferencesView({
 
       <div className="space-y-8">
         {/* --- 1. LOCALIZACIÓN --- */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100">
-            <HiOutlineGlobeAlt className="w-5 h-5 text-slate-400" />
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 dark:bg-gray-900 dark:border-slate-700">
+          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <HiOutlineGlobeAlt className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wide">
               Localización
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1 dark:text-slate-400">
                 Zona Horaria
               </label>
               <div className="relative">
-                <HiOutlineClock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <HiOutlineClock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 dark:text-slate-500" />
                 <select
                   value={localPrefs.timezone}
                   onChange={(e) =>
                     setLocalPrefs({ ...localPrefs, timezone: e.target.value })
                   }
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none appearance-none cursor-pointer hover:border-slate-300 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none appearance-none cursor-pointer hover:border-slate-300 transition-all dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:hover:border-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
                 >
                   <option value="browser">Predeterminado del Navegador</option>
                   <option value="UTC">UTC (Universal)</option>
@@ -136,23 +136,23 @@ export default function SystemPreferencesView({
                   <option value="Europe/London">Europa/Londres (GMT)</option>
                 </select>
               </div>
-              <p className="text-xs text-slate-400 mt-1.5 ml-1">
+              <p className="text-xs text-slate-400 mt-1.5 ml-1 dark:text-slate-500">
                 Define cómo se visualizan las fechas en el historial.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1 dark:text-slate-400">
                 Idioma
               </label>
               <div className="relative">
-                <HiOutlineGlobeAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <HiOutlineGlobeAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 dark:text-slate-500" />
                 <select
                   value={localPrefs.language}
                   onChange={(e) =>
                     setLocalPrefs({ ...localPrefs, language: e.target.value })
                   }
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none appearance-none cursor-pointer hover:border-slate-300 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none appearance-none cursor-pointer hover:border-slate-300 transition-all dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:hover:border-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
                 >
                   <option value="es">Español (España)</option>
                   <option value="en">English (US)</option>
@@ -163,17 +163,17 @@ export default function SystemPreferencesView({
         </div>
 
         {/* --- 2. LÍMITES Y CARGA --- */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100">
-            <FaCloudArrowUp className="w-5 h-5 text-slate-400" />
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 dark:bg-gray-900 dark:border-slate-700">
+          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <FaCloudArrowUp className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wide">
               Restricciones de Carga
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1 dark:text-slate-400">
                 Tamaño Máximo (MB)
               </label>
               <div className="relative">
@@ -188,7 +188,7 @@ export default function SystemPreferencesView({
                       maxUploadSizeMB: parseInt(e.target.value) || 10,
                     })
                   }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-bold text-slate-900"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-bold text-slate-900 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">
                   MB
@@ -197,7 +197,7 @@ export default function SystemPreferencesView({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1 dark:text-slate-400">
                 Límite de Páginas
               </label>
               <div className="relative">
@@ -212,7 +212,7 @@ export default function SystemPreferencesView({
                       maxPageLimit: parseInt(e.target.value) || 100,
                     })
                   }
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-bold text-slate-900"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-bold text-slate-900 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">
                   Págs
@@ -223,16 +223,16 @@ export default function SystemPreferencesView({
         </div>
 
         {/* --- 3. ESTIMACIONES --- */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 dark:bg-gray-900 dark:border-slate-700">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <HiOutlineCalculator className="w-5 h-5 text-slate-400" />
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+              <HiOutlineCalculator className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wide">
                 Cálculo de Costos
               </h3>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-slate-600 dark:text-slate-300">
                 Mostrar estimaciones
               </span>
               <ToggleSwitch
@@ -244,15 +244,15 @@ export default function SystemPreferencesView({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="text-xs font-bold text-slate-500 uppercase mb-2 ml-1 flex items-center gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase mb-2 ml-1 flex items-center gap-1 dark:text-slate-400">
                 Costo Base
                 <HiOutlineInformationCircle
-                  className="w-3 h-3 text-slate-400 cursor-help"
+                  className="w-3 h-3 text-slate-400 cursor-help dark:text-slate-500"
                   title="Costo promedio por página en USD"
                 />
               </label>
               <div className="relative">
-                <HiOutlineCurrencyDollar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <HiOutlineCurrencyDollar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 dark:text-slate-500" />
                 <input
                   type="number"
                   step="0.000001"
@@ -264,21 +264,21 @@ export default function SystemPreferencesView({
                       costPerPage: parseFloat(e.target.value) || 0,
                     })
                   }
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-mono"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-mono dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-500 uppercase mb-2 ml-1 flex items-center gap-1">
+              <label className="text-xs font-bold text-slate-500 uppercase mb-2 ml-1 flex items-center gap-1 dark:text-slate-400">
                 Tiempo Procesamiento
                 <HiOutlineInformationCircle
-                  className="w-3 h-3 text-slate-400 cursor-help"
+                  className="w-3 h-3 text-slate-400 cursor-help dark:text-slate-500"
                   title="Tiempo medio por página en segundos"
                 />
               </label>
               <div className="relative">
-                <HiOutlineClock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <HiOutlineClock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 dark:text-slate-500" />
                 <input
                   type="number"
                   step="0.1"
@@ -290,7 +290,7 @@ export default function SystemPreferencesView({
                       timePerPage: parseFloat(e.target.value) || 0,
                     })
                   }
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-mono"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm font-mono dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">
                   Seg
@@ -301,15 +301,15 @@ export default function SystemPreferencesView({
         </div>
 
         {/* --- 4. POLÍTICA DE REINTENTOS --- */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-            <HiOutlineRefresh className="w-5 h-5 text-slate-400" />
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-gray-900 dark:border-slate-700">
+          <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center gap-2 dark:bg-slate-900/60 dark:border-slate-800">
+            <HiOutlineRefresh className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wide">
               Recuperación de Fallos
             </h3>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {(["network", "timeout", "rateLimit"] as const).map((key) => {
               const category = localPrefs.retryPolicy[key];
               const labels = {
@@ -321,13 +321,13 @@ export default function SystemPreferencesView({
               return (
                 <div
                   key={key}
-                  className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/30 transition-colors"
+                  className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/30 dark:hover:bg-slate-800/60 transition-colors"
                 >
                   <div className="flex-1">
-                    <h4 className="text-sm font-bold text-slate-800">
+                    <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">
                       {labels[key]}
                     </h4>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-1 dark:text-slate-400">
                       Configura cómo el sistema reacciona ante{" "}
                       {labels[key].toLowerCase()}.
                     </p>
@@ -335,7 +335,7 @@ export default function SystemPreferencesView({
 
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col">
-                      <label className="text-[10px] uppercase font-bold text-slate-400 mb-1">
+                      <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 dark:text-slate-500">
                         Intentos
                       </label>
                       <input
@@ -350,11 +350,11 @@ export default function SystemPreferencesView({
                             parseInt(e.target.value) || 0
                           )
                         }
-                        className="w-20 px-2 py-1.5 rounded-lg border border-slate-200 text-sm text-center font-bold focus:border-blue-500 outline-none"
+                        className="w-20 px-2 py-1.5 rounded-lg border border-slate-200 text-sm text-center font-bold focus:border-blue-500 outline-none dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:focus:border-blue-500"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="text-[10px] uppercase font-bold text-slate-400 mb-1">
+                      <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 dark:text-slate-500">
                         Estrategia
                       </label>
                       <select
@@ -362,7 +362,7 @@ export default function SystemPreferencesView({
                         onChange={(e) =>
                           updateRetryPolicy(key, "backoff", e.target.value)
                         }
-                        className="w-32 px-2 py-1.5 rounded-lg border border-slate-200 text-sm bg-white focus:border-blue-500 outline-none cursor-pointer"
+                        className="w-32 px-2 py-1.5 rounded-lg border border-slate-200 text-sm bg-white focus:border-blue-500 outline-none cursor-pointer dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100"
                       >
                         <option value="fixed">Fijo (30s)</option>
                         <option value="exponential">Exponencial</option>

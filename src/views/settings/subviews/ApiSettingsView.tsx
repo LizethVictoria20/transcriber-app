@@ -33,43 +33,45 @@ export default function ApiSettingsView({
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 font-sans text-slate-800">
+    <div className="max-w-3xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100">
       {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate("/settings")}
-          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer"
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer dark:hover:bg-slate-800 dark:text-slate-300"
         >
           <HiOutlineArrowLeft className="w-6 h-6" />
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
             APIs y Credenciales
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Configura los motores de inteligencia artificial.
           </p>
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3 mb-8">
-        <div className="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0 h-fit">
+      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3 mb-8 dark:bg-blue-950/40 dark:border-blue-900">
+        <div className="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0 h-fit dark:bg-blue-900 dark:text-blue-300">
           <HiOutlineShieldCheck className="w-5 h-5" />
         </div>
-        <div className="text-sm text-blue-800 leading-relaxed">
+        <div className="text-sm text-blue-800 leading-relaxed dark:text-blue-200">
           <p className="font-bold mb-1">Tus claves están seguras</p>
         </div>
       </div>
 
       <div className="space-y-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-slate-300">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-slate-300 dark:bg-gray-900 dark:border-slate-700 dark:hover:border-slate-500">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900">
               <HiOutlineCpuChip className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900">OpenAI (GPT-4o)</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="font-bold text-slate-900 dark:text-slate-50">
+                OpenAI (GPT-4o)
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Recomendado para mayor precisión legal.
               </p>
             </div>
@@ -84,14 +86,14 @@ export default function ApiSettingsView({
               onChange={(e) =>
                 setLocalKeys({ ...localKeys, openai: e.target.value })
               }
-              className="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm font-mono text-slate-700 placeholder:text-slate-300"
+              className="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm font-mono text-slate-700 placeholder:text-slate-300 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
             />
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <HiOutlineKey className="w-5 h-5" />
             </div>
             <button
               onClick={() => setShowOpenAIKey(!showOpenAIKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors p-1 dark:text-slate-500 dark:hover:text-blue-400"
             >
               {showOpenAIKey ? (
                 <HiOutlineEyeSlash className="w-5 h-5" />
@@ -106,21 +108,23 @@ export default function ApiSettingsView({
               href="https://platform.openai.com/api-keys"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 dark:text-blue-400 dark:hover:text-blue-300"
             >
               Obtener API Key &rarr;
             </a>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-slate-300">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-slate-300 dark:bg-gray-900 dark:border-slate-700 dark:hover:border-slate-500">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-purple-50 text-purple-600 rounded-lg border border-purple-100">
+            <div className="p-2 bg-purple-50 text-purple-600 rounded-lg border border-purple-100 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900">
               <HiSparkles className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900">Google Gemini</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="font-bold text-slate-900 dark:text-slate-50">
+                Google Gemini
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Opción rápida y económica para borradores.
               </p>
             </div>
@@ -135,9 +139,9 @@ export default function ApiSettingsView({
               onChange={(e) =>
                 setLocalKeys({ ...localKeys, gemini: e.target.value })
               }
-              className="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 outline-none transition-all text-sm font-mono text-slate-700 placeholder:text-slate-300"
+              className="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 outline-none transition-all text-sm font-mono text-slate-700 placeholder:text-slate-300 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-purple-500 dark:focus:ring-purple-500/30"
             />
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <HiOutlineKey className="w-5 h-5" />
             </div>
             <button
@@ -159,7 +163,7 @@ export default function ApiSettingsView({
               href="https://aistudio.google.com/app/apikey"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-semibold text-purple-600 hover:text-purple-800 hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-purple-600 hover:text-purple-800 hover:underline flex items-center gap-1 dark:text-purple-300 dark:hover:text-purple-200"
             >
               Obtener API Key &rarr;
             </a>
@@ -167,9 +171,9 @@ export default function ApiSettingsView({
         </div>
       </div>
 
-      <div className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-end gap-4">
+      <div className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-end gap-4 dark:border-slate-700">
         {saved && (
-          <span className="flex items-center gap-1.5 text-sm font-bold text-emerald-600 animate-fadeIn">
+          <span className="flex items-center gap-1.5 text-sm font-bold text-emerald-600 dark:text-emerald-400 animate-fadeIn">
             <HiCheckCircle className="w-5 h-5" />
             ¡Cambios guardados!
           </span>

@@ -73,16 +73,15 @@ function AppContent() {
     const [systemPreferences, setSystemPreferences] = useLocalStorage<SystemPreferences>('systemPreferences_v2', defaultSystemPreferences);
 
     useEffect(() => {
-      const root = window.document.documentElement;
+    const root = window.document.documentElement;
 
-      // Primero removemos ambas clases para evitar conflictos
-      root.classList.remove("light", "dark");
+    root.classList.remove("light", "dark");
 
-      if (theme === "dark") {
+    if (theme === "dark") {
         root.classList.add("dark");
-      } else {
+    } else {
         root.classList.add("light");
-      }
+    }
     }, [theme]);
 
     // Load data from Supabase when user logs in
@@ -195,10 +194,10 @@ function AppContent() {
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <AuthProvider>
-                <AppContent />
-            </AuthProvider>
-        </BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </BrowserRouter>
     );
 }

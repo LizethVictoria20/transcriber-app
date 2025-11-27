@@ -41,17 +41,19 @@ export default function PromptSettingsView({
     description?: string,
     variable?: string
   ) => (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors group">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-300 transition-colors group dark:bg-gray-900 dark:border-slate-700 dark:hover:border-blue-500">
       <div className="flex items-start gap-4 mb-4">
-        <div className="p-2.5 bg-slate-50 text-slate-600 rounded-xl border border-slate-100 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+        <div className="p-2.5 bg-slate-50 text-slate-600 rounded-xl border border-slate-100 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:group-hover:bg-slate-700 dark:group-hover:text-blue-300">
           {icon}
         </div>
         <div>
-          <h4 className="font-bold text-slate-900 text-sm uppercase tracking-wide">
+          <h4 className="font-bold text-slate-900 dark:text-slate-50 text-sm uppercase tracking-wide">
             {label}
           </h4>
           {description && (
-            <p className="text-xs text-slate-500 mt-1">{description}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {description}
+            </p>
           )}
         </div>
       </div>
@@ -62,16 +64,16 @@ export default function PromptSettingsView({
         onChange={(e) =>
           setLocalPrompts({ ...localPrompts, [fieldKey]: e.target.value })
         }
-        className="w-full h-32 px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-mono text-slate-700 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-y leading-relaxed"
+        className="w-full h-32 px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-mono text-slate-700 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-y leading-relaxed dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-950 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
         placeholder="Escribe las instrucciones para la IA aquí..."
       />
 
       {variable && (
-        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 bg-blue-50/50 px-3 py-2 rounded-lg border border-blue-100/50">
-          <HiOutlineInformationCircle className="w-4 h-4 text-blue-400" />
+        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 bg-blue-50/50 px-3 py-2 rounded-lg border border-blue-100/50 dark:text-slate-300 dark:bg-blue-950/40 dark:border-blue-900/60">
+          <HiOutlineInformationCircle className="w-4 h-4 text-blue-400 dark:text-blue-300" />
           <span>
             Variable dinámica:{" "}
-            <code className="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-blue-600 font-bold select-all">
+            <code className="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-blue-600 font-bold select-all dark:bg-slate-900 dark:border-blue-900 dark:text-blue-300">
               {variable}
             </code>
           </span>
@@ -81,21 +83,21 @@ export default function PromptSettingsView({
   );
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 relative min-h-screen pb-32">
+    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100 relative min-h-screen pb-32">
       {/* --- HEADER --- */}
       <div className="flex items-center gap-4 mb-8">
         <button
-          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200"
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors border border-transparent hover:border-slate-200 dark:hover:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
           onClick={() => navigate("/settings")}
           title="Volver al menú"
         >
           <HiOutlineArrowLeft className="w-6 h-6" />
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             Cadenas de Prompts
           </h2>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Ajusta el tono y formato de las respuestas de la IA.
           </p>
         </div>
@@ -104,7 +106,7 @@ export default function PromptSettingsView({
       <div className="space-y-10">
         {/* SECCIÓN 1 */}
         <section>
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 ml-1 flex items-center gap-2">
+          <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4 ml-1 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             Procesamiento de Texto
           </h3>
@@ -131,7 +133,7 @@ export default function PromptSettingsView({
 
         {/* SECCIÓN 2 */}
         <section>
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 ml-1 flex items-center gap-2">
+          <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4 ml-1 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
             Generación de Análisis
           </h3>
@@ -170,16 +172,16 @@ export default function PromptSettingsView({
       </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
-        <div className="bg-white/80 backdrop-blur-md border border-slate-200/60 pl-5 pr-2 py-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+        <div className="bg-white/80 backdrop-blur-md border border-slate-200/60 pl-5 pr-2 py-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center gap-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 dark:bg-slate-900/90 dark:border-slate-700">
           <div className="flex items-center">
             {saved ? (
-              <span className="flex items-center gap-2 text-emerald-600 text-sm font-semibold animate-fadeIn">
+              <span className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm font-semibold animate-fadeIn">
                 <HiCheckCircle className="w-5 h-5" />
                 <span>Cambios guardados</span>
               </span>
             ) : (
-              <span className="text-sm text-slate-500 font-medium flex items-center gap-2">
-                <HiSparkles className="w-4 h-4 text-slate-400" />
+              <span className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2">
+                <HiSparkles className="w-4 h-4 text-slate-400 dark:text-slate-500" />
                 <span>Edición activa</span>
               </span>
             )}
@@ -187,7 +189,7 @@ export default function PromptSettingsView({
 
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-slate-900 hover:bg-blue-600 text-white text-sm font-bold rounded-full shadow-md transition-all transform active:scale-95"
+            className="px-6 py-2 bg-slate-900 hover:bg-blue-600 text-white text-sm font-bold rounded-full shadow-md transition-all transform active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500"
           >
             Guardar
           </button>

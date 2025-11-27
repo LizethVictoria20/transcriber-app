@@ -274,40 +274,40 @@ export default function TranscribeView({
   };
 
   return (
-    <div className="bg-slate-50 py-12 px-4 sm:px-6 font-sans">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="bg-slate-50 dark:bg-gray-900 py-12 px-4 sm:px-6 font-sans transition-colors">
+      <div className="max-w-5xl mx-auto space-y-6 text-slate-800 dark:text-slate-100">
         {/* Cabecera */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
               Nueva Transcripción
             </h2>
-            <p className="text-slate-500 mt-1">
+            <p className="text-slate-500 dark:text-slate-400 mt-1">
               Carga tu documento y configura la IA.
             </p>
           </div>
         </div>
 
         {/* Tarjeta Principal */}
-        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+        <div className="bg-white dark:bg-gray-950 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-slate-900/40 border border-slate-100 dark:border-slate-800 overflow-hidden relative transition-colors">
           {isProcessing && (
-            <div className="absolute inset-0 z-50 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center p-8">
+            <div className="absolute inset-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center p-8">
               <div className="w-full max-w-sm text-center">
                 <div className="w-16 h-16 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">
                   Transcribiendo...
                 </h3>
-                <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+                <div className="flex justify-between text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
                   <span>Progreso</span>
                   <span>{Math.round(progress)}%</span>
                 </div>
-                <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-blue-600 transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-                <p className="mt-4 text-sm text-slate-400">
+                <p className="mt-4 text-sm text-slate-400 dark:text-slate-500">
                   Por favor no cierres esta ventana.
                 </p>
               </div>
@@ -320,8 +320,8 @@ export default function TranscribeView({
                 className={`group relative border-2 border-dashed rounded-3xl h-80 flex flex-col items-center justify-center text-center transition-all duration-300 ease-in-out cursor-pointer overflow-hidden
       ${
         isDragging
-          ? "border-blue-500 bg-blue-50 ring-4 ring-blue-100 scale-[1.01]"
-          : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/5"
+          ? "border-blue-500 bg-blue-50 ring-4 ring-blue-100 scale-[1.01] dark:bg-blue-900/30 dark:ring-blue-500/30"
+          : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/5 dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-900"
       }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragEvents}
@@ -349,28 +349,28 @@ export default function TranscribeView({
                 </div>
 
                 <div className="relative z-10 mb-6 group-hover:-translate-y-1 transition-transform duration-300">
-                  <div className="w-20 h-20 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center relative">
-                    <div className="absolute inset-0 bg-blue-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <HiOutlineCloudArrowUp className="w-10 h-10 text-slate-400 group-hover:text-blue-600 transition-colors duration-300 relative z-10" />
+                  <div className="w-20 h-20 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center relative">
+                    <div className="absolute inset-0 bg-blue-50 dark:bg-blue-900/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <HiOutlineCloudArrowUp className="w-10 h-10 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 relative z-10" />
                   </div>
                   <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-12 h-2 bg-slate-200/50 rounded-full blur-sm group-hover:bg-blue-200/50 transition-colors"></div>
                 </div>
 
                 <div className="relative z-10 space-y-2">
-                  <p className="text-xl font-bold text-slate-900">
-                    <span className="text-blue-600 hover:underline decoration-2 underline-offset-2">
+                  <p className="text-xl font-bold text-slate-900 dark:text-slate-50">
+                    <span className="text-blue-600 dark:text-blue-400 hover:underline decoration-2 underline-offset-2">
                       Haz clic para subir
                     </span>{" "}
                     o arrastra y suelta
                   </p>
-                  <p className="text-slate-500 text-sm max-w-xs mx-auto leading-relaxed">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs mx-auto leading-relaxed">
                     Sube tus expedientes judiciales o documentos legales en
                     formato PDF.
                   </p>
                 </div>
 
                 <div className="relative z-10 mt-6">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200 group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:group-hover:bg-slate-700 dark:group-hover:text-blue-300">
                     PDF • Máx. 50MB
                   </span>
                 </div>
@@ -379,13 +379,13 @@ export default function TranscribeView({
           )}
 
           {/* 2. LOADER DE LECTURA */}
-          {isReadingFile && (
+        {isReadingFile && (
             <div className="p-32 text-center">
-              <div className="w-16 h-16 border-4 border-slate-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
-              <h3 className="text-lg font-bold text-slate-900">
+              <div className="w-16 h-16 border-4 border-slate-100 dark:border-slate-700 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">
                 Analizando Documento...
               </h3>
-              <p className="text-slate-500">Preparando vista previa</p>
+              <p className="text-slate-500 dark:text-slate-400">Preparando vista previa</p>
             </div>
           )}
 
@@ -393,16 +393,16 @@ export default function TranscribeView({
           {pdfFile && !isReadingFile && (
             <div className="p-8">
               {/* A. Info Archivo */}
-              <div className="flex items-center justify-between bg-slate-50 p-5 rounded-2xl border border-slate-200 mb-8">
+              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white border border-slate-200 rounded-xl flex items-center justify-center shrink-0 text-red-500 shadow-sm">
+                  <div className="w-12 h-12 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center shrink-0 text-red-500 shadow-sm">
                     <HiOutlineDocumentText className="w-7 h-7" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-base">
+                    <h4 className="font-bold text-slate-900 dark:text-slate-50 text-base">
                       {pdfFile.name}
                     </h4>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {(pdfFile.size / 1024 / 1024).toFixed(2)} MB •{" "}
                       {totalPages} Páginas
                     </p>
@@ -410,7 +410,7 @@ export default function TranscribeView({
                 </div>
                 <button
                   onClick={clearFile}
-                  className="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 rounded-lg text-sm font-medium transition-all shadow-sm"
+                  className="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 rounded-lg text-sm font-medium transition-all shadow-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                 >
                   Cambiar archivo
                 </button>
@@ -420,38 +420,38 @@ export default function TranscribeView({
               <div className="space-y-8">
                 <div className="mb-8 space-y-8">
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
-                      <HiOutlineDocumentText className="w-5 h-5 text-blue-600" />
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wide mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+                      <HiOutlineDocumentText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                       1. Configuración del Expediente
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
                           Nombre del Caso
                         </label>
                         <input
                           type="text"
                           value={transcriptionName}
                           onChange={(e) => setTranscriptionName(e.target.value)}
-                          className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                          className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-500"
                           placeholder="Ej: Caso 5402 - Declaración Testimonial"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
                           Alcance de lectura
                         </label>
-                        <div className="p-1.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <div className="p-1.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
                           <div className="flex flex-col sm:flex-row gap-2">
-                            <div className="flex bg-white rounded-lg shadow-sm border border-slate-200 p-1 shrink-0">
+                            <div className="flex bg-white dark:bg-slate-950 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-1 shrink-0">
                               <button
                                 onClick={() => setTranscribeAll(true)}
                                 className={`flex-1 px-4 py-2.5 text-xs font-bold rounded-md transition-all ${
                                   transcribeAll
                                     ? "bg-slate-800 text-white shadow-md"
-                                    : "text-slate-500 hover:bg-slate-50"
+                                    : "text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900"
                                 }`}
                               >
                                 Todas ({totalPages})
@@ -461,7 +461,7 @@ export default function TranscribeView({
                                 className={`flex-1 px-4 py-2.5 text-xs font-bold rounded-md transition-all ${
                                   !transcribeAll
                                     ? "bg-slate-800 text-white shadow-md"
-                                    : "text-slate-500 hover:bg-slate-50"
+                                    : "text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900"
                                 }`}
                               >
                                 Manual
@@ -482,8 +482,8 @@ export default function TranscribeView({
                                 }
                                 className={`w-full h-full min-h-[46px] px-4 text-sm border-none bg-transparent focus:ring-0 outline-none rounded-lg ${
                                   transcribeAll
-                                    ? "text-slate-400 italic cursor-not-allowed text-center"
-                                    : "text-slate-900 font-bold bg-white border border-slate-200 shadow-inner"
+                                    ? "text-slate-400 dark:text-slate-500 italic cursor-not-allowed text-center"
+                                    : "text-slate-900 dark:text-slate-100 font-bold bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 shadow-inner"
                                 }`}
                               />
                             </div>
@@ -495,15 +495,15 @@ export default function TranscribeView({
 
                   {/* --- INTELIGENCIA ARTIFICIAL --- */}
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
-                      <HiSparkles className="w-5 h-5 text-blue-600" />
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-wide mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+                      <HiSparkles className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                       2. Configuración de Procesamiento
                     </h3>
 
-                    <div className="bg-slate-50/80 rounded-2xl border border-slate-200 p-6">
+                    <div className="bg-slate-50/80 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+                          <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
                             Motor de IA
                           </label>
                           <div className="grid grid-cols-2 gap-3">
@@ -511,15 +511,15 @@ export default function TranscribeView({
                               onClick={() => setProvider("gemini")}
                               className={`relative flex flex-col items-center justify-center py-3 px-4 rounded-xl border-2 transition-all ${
                                 provider === "gemini"
-                                  ? "bg-white border-blue-500 text-blue-700 shadow-md ring-1 ring-blue-500/20"
-                                  : "bg-white border-transparent text-slate-500 hover:border-slate-200 shadow-sm"
+                                  ? "bg-white border-blue-500 text-blue-700 shadow-md ring-1 ring-blue-500/20 dark:bg-slate-950 dark:text-blue-300"
+                                  : "bg-white border-transparent text-slate-500 hover:border-slate-200 shadow-sm dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700"
                               }`}
                             >
                               <div className="flex items-center gap-2 mb-0.5">
                                 <span className="text-sm font-bold">
                                   Gemini
                                 </span>
-                                <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">
+                                <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase dark:bg-green-900/50 dark:text-green-300">
                                   Rápido
                                 </span>
                               </div>
@@ -535,15 +535,15 @@ export default function TranscribeView({
                               onClick={() => setProvider("openai")}
                               className={`relative flex flex-col items-center justify-center py-3 px-4 rounded-xl border-2 transition-all ${
                                 provider === "openai"
-                                  ? "bg-white border-blue-500 text-blue-700 shadow-md ring-1 ring-blue-500/20"
-                                  : "bg-white border-transparent text-slate-500 hover:border-slate-200 shadow-sm"
+                                  ? "bg-white border-blue-500 text-blue-700 shadow-md ring-1 ring-blue-500/20 dark:bg-slate-950 dark:text-blue-300"
+                                  : "bg-white border-transparent text-slate-500 hover:border-slate-200 shadow-sm dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700"
                               }`}
                             >
                               <div className="flex items-center gap-2 mb-0.5">
                                 <span className="text-sm font-bold">
                                   GPT-4o
                                 </span>
-                                <span className="bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">
+                                <span className="bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase dark:bg-purple-900/40 dark:text-purple-300">
                                   Preciso
                                 </span>
                               </div>
@@ -558,15 +558,15 @@ export default function TranscribeView({
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+                          <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">
                             Opciones Adicionales
                           </label>
-                          <label className="flex items-center gap-4 px-5 py-3.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 transition-all shadow-sm h-[76px] group">
+                          <label className="flex items-center gap-4 px-5 py-3.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 transition-all shadow-sm h-[76px] group dark:bg-slate-950 dark:border-slate-700 dark:hover:border-blue-500/70">
                             <div
                               className={`w-6 h-6 rounded border flex items-center justify-center transition-colors shrink-0 ${
                                 translateMode
                                   ? "bg-blue-600 border-blue-600"
-                                  : "border-slate-300 bg-slate-50 group-hover:bg-white"
+                                  : "border-slate-300 bg-slate-50 group-hover:bg-white dark:border-slate-600 dark:bg-slate-900"
                               }`}
                             >
                               {translateMode && (
@@ -582,10 +582,10 @@ export default function TranscribeView({
                               className="hidden"
                             />
                             <div className="flex flex-col">
-                              <span className="text-sm font-bold text-slate-700 group-hover:text-blue-700 transition-colors">
+                              <span className="text-sm font-bold text-slate-700 dark:text-slate-100 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                                 Traducir al Español
                               </span>
-                              <span className="text-[11px] text-slate-400 mt-0.5">
+                              <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
                                 Detecta el idioma original y traduce la salida.
                               </span>
                             </div>
@@ -595,13 +595,13 @@ export default function TranscribeView({
                     </div>
                   </div>
                 </div>
-                <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="px-4 py-2 bg-slate-50 rounded-lg border border-slate-200 text-sm text-slate-600">
+                    <div className="px-4 py-2 bg-slate-50 rounded-lg border border-slate-200 text-sm text-slate-600 dark:bg-slate-900/60 dark:border-slate-700 dark:text-slate-300">
                       <span className="font-medium">Páginas:</span>{" "}
                       {pagesToTranscribe.length}
                     </div>
-                    <div className="px-4 py-2 bg-blue-50 rounded-lg border border-blue-100 text-sm text-blue-700">
+                    <div className="px-4 py-2 bg-blue-50 rounded-lg border border-blue-100 text-sm text-blue-700 dark:bg-blue-950/40 dark:border-blue-900 dark:text-blue-300">
                       <span className="font-medium">Costo Est.:</span>{" "}
                       <span className="font-bold">
                         {estimatedCost || "$0.00"}
@@ -611,9 +611,9 @@ export default function TranscribeView({
                 </div>
 
                 {pageImages.length > 0 && (
-                  <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
+                  <div className="bg-slate-50/50 dark:bg-slate-900/60 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                      <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
                         <HiOutlineQueueList className="w-4 h-4" />
                         Vista Previa ({pagesToTranscribe.length} Seleccionadas)
                       </h4>
@@ -629,7 +629,7 @@ export default function TranscribeView({
                             className={`relative aspect-3/4 rounded-lg overflow-hidden border transition-all cursor-default ${
                               isSelected
                                 ? "border-blue-500 ring-2 ring-blue-500/20 opacity-100 shadow-sm transform scale-105 z-10"
-                                : "border-slate-200 opacity-50 grayscale hover:opacity-100 hover:grayscale-0"
+                                : "border-slate-200 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 dark:border-slate-700"
                             }`}
                           >
                             <img
@@ -655,7 +655,7 @@ export default function TranscribeView({
                 <button
                   onClick={handleTranscribe}
                   disabled={isProcessing || pagesToTranscribe.length === 0}
-                  className="px-8 py-3 bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-50 disabled:shadow-none w-full md:w-auto justify-center transform active:scale-95"
+                  className="px-8 py-3 bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-50 disabled:shadow-none w-full md:w-auto justify-center transform active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500 dark:shadow-blue-900/40"
                 >
                   <HiOutlinePlay className="w-5 h-5" />
                   <span>Iniciar Transcripción</span>
@@ -666,7 +666,7 @@ export default function TranscribeView({
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm border border-red-100 text-center font-medium animate-pulse">
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm border border-red-100 text-center font-medium animate-pulse dark:bg-red-950/40 dark:text-red-300 dark:border-red-900">
             {error}
           </div>
         )}

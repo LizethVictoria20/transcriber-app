@@ -1,33 +1,17 @@
 @import "tailwindcss";
 
-/* Puedes cambiar esto para que coincida con la nueva lógica si quieres usar variables CSS globales */
-:root {
-  /* Variables light */
-  --bg-color: #ffffff;
-  --text-color: #111827;
-  /* Apply defaults so the ruleset is not empty and provides usable variables */
-  background-color: var(--bg-color);
-  color: var(--text-color);
-}
+@variant dark (&:where(.dark, .dark *));
 
-:root.dark {
-  /* Variables dark si las necesitas manuales */
-  background-color: #111827; 
-  color: #f3f4f6;
-}
-
-/* Animaciones para notificaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 transition-colors duration-300;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  html.dark body {
+    @apply bg-[#111827] text-gray-100;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
+* {
+  box-sizing: border-box;
 }

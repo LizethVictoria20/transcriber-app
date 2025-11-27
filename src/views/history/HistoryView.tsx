@@ -85,28 +85,32 @@ export default function HistoryView({
 
   if (transcriptions.length === 0) {
     return (
-      <div>
-        <h2>Historial de Transcripciones</h2>
-        <p>Aún no has realizado ninguna transcripción.</p>
+      <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+          Historial de Transcripciones
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Aún no has realizado ninguna transcripción.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800">
+    <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100">
       {/* --- HEADER --- */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             Historial de Transcripciones
           </h2>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Gestiona y revisa tus documentos procesados.
           </p>
         </div>
         <button
           onClick={clearHistory}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100 dark:text-red-300 dark:bg-red-950/40 dark:hover:bg-red-900/60 dark:border-red-900"
         >
           <HiOutlineTrash className="w-4 h-4" />
           Limpiar Historial
@@ -114,19 +118,19 @@ export default function HistoryView({
       </div>
 
       {/* --- Filtros y Búsqueda --- */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6">
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 dark:bg-gray-900 dark:border-gray-700">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Buscador */}
           <div className="flex-1 relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <HiMagnifyingGlass className="h-5 w-5 text-slate-400" />
+              <HiMagnifyingGlass className="h-5 w-5 text-slate-400 dark:text-slate-500" />
             </div>
             <input
               type="text"
               placeholder="Buscar por nombre, archivo o etiqueta..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all sm:text-sm dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder-slate-500 dark:focus:bg-gray-900"
             />
           </div>
 
@@ -138,8 +142,10 @@ export default function HistoryView({
               </div>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-                className="block w-full pl-9 pr-8 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer"
+                onChange={(e) =>
+                  setStatusFilter(e.target.value as StatusFilter)
+                }
+                className="block w-full pl-9 pr-8 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
               >
                 <option value="all">Todos</option>
                 <option value="completed">Completado</option>
@@ -148,7 +154,7 @@ export default function HistoryView({
               </select>
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <svg
-                  className="h-4 w-4 text-slate-400"
+                  className="h-4 w-4 text-slate-400 dark:text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -168,7 +174,7 @@ export default function HistoryView({
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                className="block w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer"
+                className="block w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
               >
                 <option value="date-desc">Más Reciente</option>
                 <option value="date-asc">Más Antiguo</option>
@@ -177,7 +183,7 @@ export default function HistoryView({
               </select>
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <svg
-                  className="h-4 w-4 text-slate-400"
+                  className="h-4 w-4 text-slate-400 dark:text-slate-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -197,7 +203,7 @@ export default function HistoryView({
               <select
                 value={itemsPerPage}
                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="block w-full px-3 py-2.5 text-center text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer"
+                className="block w-full px-3 py-2.5 text-center text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -210,14 +216,14 @@ export default function HistoryView({
 
       {/* --- LISTA DE RESULTADOS --- */}
       {paginatedItems.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-          <div className="mx-auto w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-            <HiMagnifyingGlass className="w-8 h-8 text-slate-300" />
+        <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300 dark:bg-gray-900 dark:border-slate-600">
+          <div className="mx-auto w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+            <HiMagnifyingGlass className="w-8 h-8 text-slate-300 dark:text-slate-500" />
           </div>
-          <h3 className="text-lg font-medium text-slate-900">
+          <h3 className="text-lg font-medium text-slate-900 dark:text-slate-50">
             No se encontraron resultados
           </h3>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Intenta ajustar tus filtros o términos de búsqueda.
           </p>
         </div>
@@ -227,13 +233,13 @@ export default function HistoryView({
             <div
               key={item.id}
               onClick={() => onSelectTranscription(item)}
-              className="group bg-white rounded-xl border border-slate-200 p-4 sm:p-5 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+              className="group bg-white rounded-xl border border-slate-200 p-4 sm:p-5 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 dark:bg-gray-900 dark:border-gray-700 dark:hover:border-blue-500"
             >
               <div
                 className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                   item.error
-                    ? "bg-red-50 text-red-500"
-                    : "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
+                    ? "bg-red-50 text-red-500 dark:bg-red-950 dark:text-red-400"
+                    : "bg-blue-50 text-blue-600 group-hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:group-hover:bg-blue-900"
                 }`}
               >
                 <HiOutlineDocumentText className="w-6 h-6" />
@@ -242,10 +248,10 @@ export default function HistoryView({
               {/* Contenido Principal */}
               <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 <div>
-                  <h4 className="font-bold text-slate-900 truncate group-hover:text-blue-700 transition-colors">
+                  <h4 className="font-bold text-slate-900 dark:text-slate-50 truncate group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                     {item.name}
                   </h4>
-                  <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
                     <HiOutlineClock className="w-3.5 h-3.5" />
                     {item.date}
                   </p>
@@ -253,10 +259,10 @@ export default function HistoryView({
 
                 <div className="flex flex-col justify-center">
                   <p
-                    className="text-sm text-slate-600 truncate"
+                    className="text-sm text-slate-600 dark:text-slate-300 truncate"
                     title={item.fileName}
                   >
-                    <span className="font-medium text-slate-400 text-xs uppercase mr-2">
+                    <span className="font-medium text-slate-400 dark:text-slate-500 text-xs uppercase mr-2">
                       Archivo:
                     </span>
                     {item.fileName}
@@ -266,13 +272,13 @@ export default function HistoryView({
                       item.tags.map((tag: string) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
+                          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600"
                         >
                           {tag}
                         </span>
                       ))
                     ) : (
-                      <span className="text-[10px] text-slate-400 italic">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 italic">
                         Sin etiquetas
                       </span>
                     )}
@@ -281,17 +287,17 @@ export default function HistoryView({
 
                 <div className="flex items-center justify-start md:justify-end gap-3">
                   {item.error ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900">
                       <HiOutlineExclamationCircle className="w-4 h-4" />
                       Error
                     </span>
                   ) : (
                     <div className="flex flex-col items-end">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900">
                         <HiOutlineCheckCircle className="w-4 h-4" />
                         Completado
                       </span>
-                      <span className="text-[10px] text-slate-400 mt-1 mr-1">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 mr-1">
                         {item.pageCount}{" "}
                         {item.pageCount === 1 ? "página" : "páginas"}
                       </span>
@@ -300,7 +306,7 @@ export default function HistoryView({
                 </div>
               </div>
 
-              <div className="hidden sm:flex items-center justify-center text-slate-300 group-hover:text-blue-500 transition-colors pl-2">
+              <div className="hidden sm:flex items-center justify-center text-slate-300 dark:text-slate-500 group-hover:text-blue-500 transition-colors pl-2">
                 <HiChevronRight className="w-6 h-6" />
               </div>
             </div>
@@ -310,20 +316,26 @@ export default function HistoryView({
 
       {/* --- PAGINACIÓN --- */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-slate-200 pt-6 mt-8">
+        <div className="flex items-center justify-between border-t border-slate-200 pt-6 mt-8 dark:border-slate-700">
           <button
-            className="flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-900 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-gray-800"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
             Anterior
           </button>
-          <span className="text-sm text-slate-600 font-medium">
-            Página <span className="text-slate-900">{currentPage}</span> de{" "}
-            <span className="text-slate-900">{totalPages}</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+            Página
+            <span className="text-slate-900 dark:text-slate-100">
+              {currentPage}
+            </span>
+            de
+            <span className="text-slate-900 dark:text-slate-100">
+              {totalPages}
+            </span>
           </span>
           <button
-            className="flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-900 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-gray-800"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
