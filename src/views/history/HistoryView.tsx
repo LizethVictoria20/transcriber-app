@@ -10,12 +10,23 @@ import {
   HiOutlineCheckCircle,
   HiOutlineClock,
 } from "react-icons/hi2";
+import ConfirmModal from "../../components/ConfirmModal";
 
 interface HistoryViewProps {
   transcriptions: TranscriptionItem[];
   clearHistory: () => void;
   onDeleteTranscription: (id: number) => void;
   onSelectTranscription: (item: TranscriptionItem) => void;
+}
+
+interface DeleteConfirmState {
+  isOpen: boolean;
+  transcriptionId: number | null;
+  transcriptionName: string;
+}
+
+interface ClearConfirmState {
+  isOpen: boolean;
 }
 
 type SortOrder = "date-desc" | "date-asc" | "name-asc" | "name-desc";
@@ -32,6 +43,17 @@ export default function HistoryView({
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortOrder, setSortOrder] = useState<SortOrder>("date-desc");
+  
+  // Modal states
+  const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
+    isOpen: false,
+    transcriptionId: null,
+    transcriptionName: ''
+  });
+  
+  const [clearConfirm, setClearConfirm] = useState<ClearConfirmState>({
+    isOpen: false
+  });
 
   const processedItems = useMemo(() => {
     let items = [...transcriptions];
@@ -85,6 +107,40 @@ export default function HistoryView({
     setCurrentPage(1);
   }, [searchTerm, statusFilter, itemsPerPage]);
 
+  // Handle delete confirmation
+  const handleDeleteClick = (item: TranscriptionItem) => {
+    setDeleteConfirm({
+      isOpen: true,
+      transcriptionId: item.id,
+      transcriptionName: item.name
+    });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirm.transcriptionId !== null) {
+      onDeleteTranscription(deleteConfirm.transcriptionId);
+    }
+    setDeleteConfirm({ isOpen: false, transcriptionId: null, transcriptionName: '' });
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirm({ isOpen: false, transcriptionId: null, transcriptionName: '' });
+  };
+
+  // Handle clear history confirmation
+  const handleClearClick = () => {
+    setClearConfirm({ isOpen: true });
+  };
+
+  const handleClearConfirm = () => {
+    clearHistory();
+    setClearConfirm({ isOpen: false });
+  };
+
+  const handleClearCancel = () => {
+    setClearConfirm({ isOpen: false });
+  };
+
   if (transcriptions.length === 0) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4 font-sans text-slate-800 dark:text-slate-100">
@@ -110,13 +166,6 @@ export default function HistoryView({
             Gestiona y revisa tus documentos procesados.
           </p>
         </div>
-        <button
-          onClick={clearHistory}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100 dark:text-red-300 dark:bg-red-950/40 dark:hover:bg-red-900/60 dark:border-red-900"
-        >
-          <HiOutlineTrash className="w-4 h-4" />
-          Limpiar Historial
-        </button>
       </div>
 
       {/* --- Filtros y Búsqueda --- */}
@@ -310,14 +359,9 @@ export default function HistoryView({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("🔴 Botón eliminar clickeado, ID:", item.id);
-                      console.log(
-                        "🔴 Función onDeleteTranscription:",
-                        typeof onDeleteTranscription
-                      );
-                      onDeleteTranscription(item.id);
+                      handleDeleteClick(item);
                     }}
-                    className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 hover:text-red-700 transition-colors dark:bg-red-950/40 dark:text-red-300 dark:border-red-900 dark:hover:bg-red-900/60"
+                    className="inline-flex items-center justify-center px-3 py-1 cursor-pointer rounded-full text-xs font-medium bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 hover:text-red-700 transition-colors dark:bg-red-950/40 dark:text-red-300 dark:border-red-900 dark:hover:bg-red-900/60"
                     title="Eliminar transcripción"
                   >
                     <HiOutlineTrash className="w-4 h-4" />
@@ -363,6 +407,30 @@ export default function HistoryView({
           </button>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteConfirm.isOpen}
+        title="Eliminar Transcripción"
+        message={`¿Estás seguro de que deseas eliminar "${deleteConfirm.transcriptionName}"? Esta acción no se puede deshacer y eliminará permanentemente la transcripción y el archivo PDF asociado.`}
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        variant="danger"
+      />
+
+      {/* Clear History Confirmation Modal */}
+      <ConfirmModal
+        isOpen={clearConfirm.isOpen}
+        title="Limpiar Todo el Historial"
+        message={`¿Estás seguro de que deseas eliminar TODAS las transcripciones (${transcriptions.length} en total)? Esta acción no se puede deshacer y eliminará permanentemente todas las transcripciones y archivos PDF del historial.`}
+        confirmText="Sí, eliminar todo"
+        cancelText="Cancelar"
+        onConfirm={handleClearConfirm}
+        onCancel={handleClearCancel}
+        variant="danger"
+      />
     </div>
   );
 }

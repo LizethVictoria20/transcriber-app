@@ -160,20 +160,6 @@ function AppContent() {
         console.log('🟢 handleDeleteTranscription llamado con ID:', id);
         console.log('🟢 Transcripciones actuales:', transcriptions.length);
         
-        const item = transcriptions.find(t => t.id === id);
-        console.log('🟢 Item encontrado:', item);
-        
-        const confirmMessage = item
-            ? `¿Eliminar la transcripción "${item.name}"? Esta acción no se puede deshacer.`
-            : '¿Eliminar esta transcripción? Esta acción no se puede deshacer.';
-
-        const userConfirmed = window.confirm(confirmMessage);
-        console.log('🟢 Usuario confirmó:', userConfirmed);
-        
-        if (!userConfirmed) {
-            return;
-        }
-
         console.log('🟢 Actualizando estado local...');
         // Optimistic update in local state
         setTranscriptions(prev => {
@@ -209,10 +195,6 @@ function AppContent() {
 
     const clearHistory = async () => {
         if (!transcriptions.length) {
-            return;
-        }
-
-        if (!window.confirm("¿Estás seguro? Esto eliminará TODAS las transcripciones del historial y de la base de datos. Esta acción no se puede deshacer.")) {
             return;
         }
 
