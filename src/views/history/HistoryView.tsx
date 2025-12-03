@@ -257,6 +257,10 @@ export default function HistoryView({
                     <HiOutlineClock className="w-3.5 h-3.5" />
                     {item.date}
                   </p>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 mr-1">
+                    {item.pageCount}{" "}
+                    {item.pageCount === 1 ? "página" : "páginas"}
+                  </span>
                 </div>
 
                 <div className="flex flex-col justify-center">
@@ -299,10 +303,6 @@ export default function HistoryView({
                         <HiOutlineCheckCircle className="w-4 h-4" />
                         Completado
                       </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 mr-1">
-                        {item.pageCount}{" "}
-                        {item.pageCount === 1 ? "página" : "páginas"}
-                      </span>
                     </div>
                   )}
 
@@ -310,8 +310,11 @@ export default function HistoryView({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log('🔴 Botón eliminar clickeado, ID:', item.id);
-                      console.log('🔴 Función onDeleteTranscription:', typeof onDeleteTranscription);
+                      console.log("🔴 Botón eliminar clickeado, ID:", item.id);
+                      console.log(
+                        "🔴 Función onDeleteTranscription:",
+                        typeof onDeleteTranscription
+                      );
                       onDeleteTranscription(item.id);
                     }}
                     className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 hover:text-red-700 transition-colors dark:bg-red-950/40 dark:text-red-300 dark:border-red-900 dark:hover:bg-red-900/60"
