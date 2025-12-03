@@ -35,6 +35,7 @@ interface AppRoutesProps {
   handleUpdateTranscription: (id: number, text: string) => Promise<void>;
   handleUpdateTags: (id: number, tags: string[]) => Promise<void>;
   clearHistory: () => void;
+  handleDeleteTranscription: (id: number) => Promise<void>;
   onSelectTranscription: (item: TranscriptionItem) => void;
   onBack: () => void;
 }
@@ -78,6 +79,7 @@ export default function AppRoutes({
   handleUpdateTranscription,
   handleUpdateTags,
   clearHistory,
+  handleDeleteTranscription,
   onSelectTranscription,
   onBack,
 }: AppRoutesProps) {
@@ -119,6 +121,7 @@ export default function AppRoutes({
                 <HistoryView
                   transcriptions={transcriptions}
                   clearHistory={clearHistory}
+                  onDeleteTranscription={handleDeleteTranscription}
                   onSelectTranscription={onSelectTranscription}
                 />
               )}

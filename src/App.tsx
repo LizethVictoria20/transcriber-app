@@ -156,12 +156,88 @@ function AppContent() {
         }
     }
 
-    const clearHistory = async () => {
-        // Implementation note: Deleting from DB not implemented in this turn, 
-        // just clearing local view for now or require a DB delete function.
-        if(window.confirm("¿Estás seguro? Esto borrará la vista local. (La eliminación en BD requiere implementación adicional)")) {
-            setTranscriptions([]);
+    const handleDeleteTranscription = async (id: number) => {
+        console.log('🟢 handleDeleteTranscription llamado con ID:', id);
+        console.log('🟢 Transcripciones actuales:', transcriptions.length);
+        
+        const item = transcriptions.find(t => t.id === id);
+        console.log('🟢 Item encontrado:', item);
+        
+        const confirmMessage = item
+            ? `¿Eliminar la transcripción "${item.name}"? Esta acción no se puede deshacer.`
+            : '¿Eliminar esta transcripción? Esta acción no se puede deshacer.';
+
+        const userConfirmed = window.confirm(confirmMessage);
+        console.log('🟢 Usuario confirmó:', userConfirmed);
+        
+        if (!userConfirmed) {
+            return;
+        }
+
+        console.log('🟢 Actualizando estado local...');
+        // Optimistic update in local state
+        setTranscriptions(prev => {
+            const newList = prev.filter(t => t.id !== id);
+            console.log('🟢 Nueva lista tiene', newList.length, 'items');
+            return newList;
+        });
+        
+        if (selectedTranscription && selectedTranscription.id === id) {
             setSelectedTranscription(null);
+        }
+
+        console.log('🟢 Llamando a dbService.deleteTranscription...');
+        try {
+            await dbService.deleteTranscription(id);
+            console.log('✅ Transcripción eliminada de la BD exitosamente');
+        } catch (error) {
+            console.error("❌ Error eliminando de la BD:", error);
+            alert("No se pudo eliminar la transcripción de la base de datos. Recarga la página para reintentar.");
+
+            // Try to reload data to keep UI consistent
+            try {
+                setIsLoadingData(true);
+                const data = await dbService.getAllTranscriptions();
+                setTranscriptions(data);
+            } catch (reloadError) {
+                console.error("Failed to reload transcriptions after delete error", reloadError);
+            } finally {
+                setIsLoadingData(false);
+            }
+        }
+    }
+
+    const clearHistory = async () => {
+        if (!transcriptions.length) {
+            return;
+        }
+
+        if (!window.confirm("¿Estás seguro? Esto eliminará TODAS las transcripciones del historial y de la base de datos. Esta acción no se puede deshacer.")) {
+            return;
+        }
+
+        const ids = transcriptions.map(t => t.id);
+
+        // Optimistic: limpiamos la vista inmediatamente
+        setTranscriptions([]);
+        setSelectedTranscription(null);
+
+        try {
+            await Promise.all(ids.map(id => dbService.deleteTranscription(id)));
+        } catch (error) {
+            console.error("Failed to clear history from DB", error);
+            alert("Ocurrió un error eliminando el historial en la base de datos. Recarga la página para verificar el estado.");
+
+            // Intentar recargar datos reales desde la BD
+            try {
+                setIsLoadingData(true);
+                const data = await dbService.getAllTranscriptions();
+                setTranscriptions(data);
+            } catch (reloadError) {
+                console.error("Failed to reload transcriptions after clear error", reloadError);
+            } finally {
+                setIsLoadingData(false);
+            }
         }
     }
 
@@ -186,6 +262,7 @@ function AppContent() {
             handleUpdateTranscription={handleUpdateTranscription}
             handleUpdateTags={handleUpdateTags}
             clearHistory={clearHistory}
+            handleDeleteTranscription={handleDeleteTranscription}
             onSelectTranscription={handleSelectTranscription}
             onBack={handleBackFromDetail}
         />

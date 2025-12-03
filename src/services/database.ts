@@ -2,6 +2,20 @@
 import { supabase } from './supabaseClient';
 import type { TranscriptionItem } from '../types';
 
+type TranscriptionRow = {
+    id: number;
+    name: string;
+    file_name: string;
+    pages: string;
+    page_count: number;
+    original_page_count?: number;
+    provider: 'gemini' | 'openai';
+    transcription: string;
+    created_at: string;
+    error?: string;
+    tags?: string[];
+};
+
 // Table name in Supabase
 const TABLE_NAME = 'transcriptions';
 // Bucket name in Supabase Storage
@@ -11,10 +25,18 @@ export const dbService = {
     // --- DATABASE OPERATIONS ---
 
     getAllTranscriptions: async (): Promise<TranscriptionItem[]> => {
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData?.user?.id;
+        
+        console.log('🔵 getAllTranscriptions - Usuario:', userId);
+        
         const { data, error } = await supabase
             .from(TABLE_NAME)
             .select('*')
+            .eq('user_id', userId)
             .order('created_at', { ascending: false });
+
+        console.log('🔵 getAllTranscriptions - Registros encontrados:', data?.length);
 
         if (error) {
             console.error('Error fetching transcriptions:', error);
@@ -23,7 +45,7 @@ export const dbService = {
         }
 
         // Map DB columns (snake_case) to App types (camelCase)
-        return data.map((item: any) => ({
+        return (data || []).map((item: TranscriptionRow) => ({
             id: item.id,
             name: item.name,
             fileName: item.file_name,
@@ -84,6 +106,57 @@ export const dbService = {
         };
     },
 
+    deleteTranscription: async (id: number): Promise<void> => {
+        console.log('🔵 dbService.deleteTranscription llamado con ID:', id);
+        
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData.user) {
+            console.error('🔵 Error obteniendo usuario:', userError);
+            throw new Error('Usuario no autenticado');
+        }
+
+        const user = userData.user;
+        console.log('🔵 Usuario autenticado:', user.id);
+
+        const filePath = `${user.id}/${id}.pdf`;
+        console.log('🔵 Intentando eliminar archivo:', filePath);
+        
+        const { error: storageError } = await supabase.storage
+            .from(BUCKET_NAME)
+            .remove([filePath]);
+
+        if (storageError) {
+            console.warn('⚠️ Error deleting file from storage:', storageError);
+            // Continue anyway; DB record deletion is the critical part for the app
+        } else {
+            console.log('🔵 Archivo eliminado del storage');
+        }
+
+        console.log('🔵 Intentando eliminar registro de la tabla:', TABLE_NAME);
+        console.log('🔵 Filtros: id =', id, ', user_id =', user.id);
+        
+        const { data: deletedData, error: dbError } = await supabase
+            .from(TABLE_NAME)
+            .delete()
+            .eq('id', id)
+            .eq('user_id', user.id)
+            .select();
+
+        console.log('🔵 Resultado del DELETE:', deletedData);
+        
+        if (dbError) {
+            console.error('❌ Error eliminando de la BD:', dbError);
+            throw dbError;
+        }
+        
+        if (!deletedData || deletedData.length === 0) {
+            console.warn('⚠️ DELETE ejecutado pero no eliminó ningún registro. Posible problema de RLS o el registro no pertenece a este usuario');
+            throw new Error('No se pudo eliminar el registro. Verifica que te pertenezca.');
+        }
+        
+        console.log('✅ Registro eliminado de la BD exitosamente. Eliminados:', deletedData.length);
+    },
+
     updateTranscriptionText: async (id: number, text: string): Promise<void> => {
         const { error } = await supabase
             .from(TABLE_NAME)
@@ -122,7 +195,7 @@ export const dbService = {
         return data;
     },
 
-    checkPdfExists: async (transcriptionId: number): Promise<boolean> => {
+    checkPdfExists: async (): Promise<boolean> => {
          // This is a simplified check. In a real app, we might query the bucket list 
          // or just rely on the download failing gracefully.
          // For now, we assume if the record exists in DB, the file *should* exist.

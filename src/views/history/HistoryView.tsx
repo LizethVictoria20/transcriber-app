@@ -14,6 +14,7 @@ import {
 interface HistoryViewProps {
   transcriptions: TranscriptionItem[];
   clearHistory: () => void;
+  onDeleteTranscription: (id: number) => void;
   onSelectTranscription: (item: TranscriptionItem) => void;
 }
 
@@ -23,6 +24,7 @@ type StatusFilter = "all" | "completed" | "error" | "processing";
 export default function HistoryView({
   transcriptions,
   clearHistory,
+  onDeleteTranscription,
   onSelectTranscription,
 }: HistoryViewProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -303,6 +305,21 @@ export default function HistoryView({
                       </span>
                     </div>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('🔴 Botón eliminar clickeado, ID:', item.id);
+                      console.log('🔴 Función onDeleteTranscription:', typeof onDeleteTranscription);
+                      onDeleteTranscription(item.id);
+                    }}
+                    className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 hover:text-red-700 transition-colors dark:bg-red-950/40 dark:text-red-300 dark:border-red-900 dark:hover:bg-red-900/60"
+                    title="Eliminar transcripción"
+                  >
+                    <HiOutlineTrash className="w-4 h-4" />
+                    <span className="ml-1 hidden sm:inline">Eliminar</span>
+                  </button>
                 </div>
               </div>
 
