@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleGenAI, Type } from "@google/genai";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { dbService } from "../../services/database";
 import DocumentChat from "../../components/chat/DocumentChat";
 import {
@@ -214,52 +213,114 @@ export default function TranscriptionDetailView({
   };
 
   const downloadTranscriptionPdf = async () => {
-    if (!editorRef.current && viewMode !== "editor") {
-      alert(
-        "Por favor, cambia a la pestaña 'Editor de Texto' para generar el PDF con formato."
-      );
-      setViewMode("editor");
+    // Exportación basada en texto, pero con maquetación bonita en el PDF.
+    // Primero limpiamos marcadores de página tipo: --- PÁGINA 2 ---
+    const rawText = getCleanText();
+    const text = rawText
+      .split("\n")
+      .filter(
+        (line) => !/^---\s*P[ÁA]GINA\s+\d+\s*---$/i.test(line.trim())
+      )
+      .join("\n");
+
+    if (!text.trim()) {
+      alert("No hay contenido para exportar a PDF.");
       return;
     }
-
-    if (!editorRef.current) return;
 
     setIsGeneratingPdf(true);
 
     try {
-      if (!(window as any).html2canvas) {
-        (window as any).html2canvas = html2canvas;
-      }
-
       const doc = new jsPDF({
         unit: "pt",
         format: "a4",
       });
 
-      const element = editorRef.current;
-      const margin = 40;
-      const pdfWidth = 595.28;
-      const availableWidth = pdfWidth - margin * 2;
-      const scale = availableWidth / element.offsetWidth;
+      const margin = 48;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const contentWidth = pageWidth - margin * 2;
 
-      await doc.html(element, {
-        callback: function (doc) {
-          doc.save(`${item.name}-transcription.pdf`);
-          setIsGeneratingPdf(false);
-        },
-        x: margin,
-        y: margin,
-        html2canvas: {
-          scale: scale,
-          useCORS: true,
-          logging: false,
-        },
-        width: availableWidth,
-        windowWidth: element.offsetWidth,
+      // --- ENCABEZADO ---
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.text(item.name, margin, margin);
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      let metaY = margin + 20;
+
+      doc.setTextColor(90);
+      doc.text(`Archivo: ${item.fileName}`, margin, metaY);
+      metaY += 14;
+      doc.text(`Páginas transcritas: ${item.pageCount ?? "-"}`, margin, metaY);
+      metaY += 14;
+      doc.text(`Fecha: ${item.date}`, margin, metaY);
+
+      // Línea separadora
+      const headerBottom = metaY + 12;
+      doc.setDrawColor(200);
+      doc.line(margin, headerBottom, pageWidth - margin, headerBottom);
+
+      // --- CUERPO DEL DOCUMENTO ---
+      doc.setTextColor(0);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+
+      let cursorY = headerBottom + 20;
+      const lineHeight = 16;
+
+      // Dividir en párrafos (doble salto de línea)
+      const paragraphs = text
+        .split(/\n\s*\n/g)
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0);
+
+      paragraphs.forEach((paragraph, index) => {
+        const wrappedLines = doc.splitTextToSize(paragraph, contentWidth);
+
+        wrappedLines.forEach((line) => {
+          if (cursorY > pageHeight - margin) {
+            doc.addPage();
+
+            // Encabezado simple para páginas siguientes
+            doc.setFontSize(10);
+            doc.setTextColor(130);
+            doc.text(item.name, margin, margin - 10);
+
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+            cursorY = margin;
+          }
+
+          doc.text(line, margin, cursorY);
+          cursorY += lineHeight;
+        });
+
+        // Espacio extra entre párrafos
+        cursorY += lineHeight * 0.5;
       });
+
+      // Pie de página simple con número de página
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(9);
+        doc.setTextColor(150);
+        const footerText = `Página ${i} de ${pageCount}`;
+        const textWidth = doc.getTextWidth(footerText);
+        doc.text(
+          footerText,
+          pageWidth - margin - textWidth,
+          pageHeight - margin / 2
+        );
+      }
+
+      doc.save(`${item.name}-transcription.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("Ocurrió un error al generar el PDF.");
+    } finally {
       setIsGeneratingPdf(false);
     }
   };
@@ -496,7 +557,9 @@ export default function TranscriptionDetailView({
           </div>
           <div
             className={`text-xl font-bold ${
-              item.error ? "text-red-700 dark:text-red-300" : "text-blue-700 dark:text-blue-300"
+              item.error
+                ? "text-red-700 dark:text-red-300"
+                : "text-blue-700 dark:text-blue-300"
             }`}
           >
             {item.error ? "Error" : "Finalizado"}
@@ -718,7 +781,79 @@ export default function TranscriptionDetailView({
           </button>
         </div>
       </div>
+      {(generatedTable || generatedPageTable) && (
+        <div className="mt-12 space-y-8 animate-fadeIn">
+          {generatedTable && (
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
+                <HiOutlineTableCells className="w-5 h-5 text-blue-600" />
+                <h3 className="font-bold text-slate-900">
+                  Resumen General Inteligente
+                </h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                    <tr>
+                      <th className="px-6 py-3 font-bold">Tema Principal</th>
+                      <th className="px-6 py-3 font-bold">Resumen Detallado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {generatedTable.map((part, index) => (
+                      <tr key={index} className="hover:bg-slate-50/50">
+                        <td className="px-6 py-4 font-bold text-slate-700 w-1/4">
+                          {part.topic}
+                        </td>
+                        <td className="px-6 py-4 text-slate-600 leading-relaxed">
+                          {part.summary}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
+          {generatedPageTable && (
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
+                <HiOutlineDocumentDuplicate className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-bold text-slate-900">
+                  Desglose por Páginas
+                </h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                    <tr>
+                      <th className="px-6 py-3 font-bold w-24 text-center">
+                        Pág.
+                      </th>
+                      <th className="px-6 py-3 font-bold">
+                        Contenido Relevante
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {generatedPageTable.map((part, index) => (
+                      <tr key={index} className="hover:bg-slate-50/50">
+                        <td className="px-6 py-4 font-bold text-indigo-600 text-center text-lg">
+                          {part.page_number}
+                        </td>
+                        <td className="px-6 py-4 text-slate-600 leading-relaxed">
+                          {part.summary}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden min-h-[600px] dark:bg-gray-950 dark:border-gray-800 dark:shadow-slate-900/40">
         {viewMode === "editor" && (
           <div className="flex flex-col h-full">
@@ -817,85 +952,9 @@ export default function TranscriptionDetailView({
 
         {/* CHAT VIEW */}
         {viewMode === "chat" && (
-          <DocumentChat
-            transcriptionText={getCleanText()}
-          />
+          <DocumentChat transcriptionText={getCleanText()} />
         )}
       </div>
-
-      {(generatedTable || generatedPageTable) && (
-        <div className="mt-12 space-y-8 animate-fadeIn">
-          {generatedTable && (
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
-                <HiOutlineTableCells className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900">
-                  Resumen General Inteligente
-                </h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
-                    <tr>
-                      <th className="px-6 py-3 font-bold">Tema Principal</th>
-                      <th className="px-6 py-3 font-bold">Resumen Detallado</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {generatedTable.map((part, index) => (
-                      <tr key={index} className="hover:bg-slate-50/50">
-                        <td className="px-6 py-4 font-bold text-slate-700 w-1/4">
-                          {part.topic}
-                        </td>
-                        <td className="px-6 py-4 text-slate-600 leading-relaxed">
-                          {part.summary}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {generatedPageTable && (
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
-                <HiOutlineDocumentDuplicate className="w-5 h-5 text-indigo-600" />
-                <h3 className="font-bold text-slate-900">
-                  Desglose por Páginas
-                </h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
-                    <tr>
-                      <th className="px-6 py-3 font-bold w-24 text-center">
-                        Pág.
-                      </th>
-                      <th className="px-6 py-3 font-bold">
-                        Contenido Relevante
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {generatedPageTable.map((part, index) => (
-                      <tr key={index} className="hover:bg-slate-50/50">
-                        <td className="px-6 py-4 font-bold text-indigo-600 text-center text-lg">
-                          {part.page_number}
-                        </td>
-                        <td className="px-6 py-4 text-slate-600 leading-relaxed">
-                          {part.summary}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
