@@ -189,7 +189,7 @@ export default function PromptSettingsView({
 
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-slate-900 hover:bg-blue-600 text-white text-sm font-bold rounded-full shadow-md transition-all transform active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500"
+            className="px-6 py-2 bg-slate-900 hover:bg-blue-600 text-white text-sm font-bold rounded-full shadow-md transition-all transform active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500 cursor-pointer"
           >
             Guardar
           </button>

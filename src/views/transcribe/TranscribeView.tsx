@@ -155,7 +155,7 @@ export default function TranscribeView({
       setEstimatedCost(`$${cost.toFixed(4)}`);
     } else {
       cost = numPages * (850 / 1000000) * 5;
-      setEstimatedCost(`$${cost.toFixed(3)} (Est.)`);
+      setEstimatedCost(`$${cost.toFixed(3)}`);
     }
   }, [pagesToTranscribe, provider]);
 
@@ -655,7 +655,7 @@ export default function TranscribeView({
                 <button
                   onClick={handleTranscribe}
                   disabled={isProcessing || pagesToTranscribe.length === 0}
-                  className="px-8 py-3 bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-50 disabled:shadow-none w-full md:w-auto justify-center transform active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500 dark:shadow-blue-900/40"
+                  className="px-8 py-3 bg-[#2563EB] hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-50 disabled:shadow-none w-full md:w-auto justify-center transform active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500 dark:shadow-blue-900/40 cursor-pointer"
                 >
                   <HiOutlinePlay className="w-5 h-5" />
                   <span>Iniciar Transcripción</span>
