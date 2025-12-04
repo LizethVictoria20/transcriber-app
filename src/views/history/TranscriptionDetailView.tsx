@@ -880,21 +880,6 @@ export default function TranscriptionDetailView({
                       U
                     </button>
                   </div>
-                  <div className="w-px h-6 bg-slate-300 mx-1"></div>
-                  <div className="flex bg-white rounded-lg border border-slate-200 p-1 shadow-sm dark:bg-slate-900 dark:border-slate-700">
-                    <button
-                      className="px-3 py-1.5 hover:bg-slate-50 rounded text-xs font-bold text-slate-600 cursor-pointer dark:text-slate-100 dark:hover:bg-slate-800"
-                      onClick={() => execCmd("formatBlock", "H2")}
-                    >
-                      H2
-                    </button>
-                    <button
-                      className="px-3 py-1.5 hover:bg-slate-50 rounded text-xs font-bold text-slate-600 cursor-pointer dark:text-slate-100 dark:hover:bg-slate-800"
-                      onClick={() => execCmd("formatBlock", "P")}
-                    >
-                      P
-                    </button>
-                  </div>
                 </>
               ) : (
                 <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide px-3">
@@ -952,7 +937,10 @@ export default function TranscriptionDetailView({
 
         {/* CHAT VIEW */}
         {viewMode === "chat" && (
-          <DocumentChat transcriptionText={getCleanText()} />
+          <DocumentChat
+            transcriptionText={getCleanText()}
+            transcriptionId={item.id}
+          />
         )}
       </div>
     </div>

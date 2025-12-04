@@ -1,6 +1,6 @@
 
 import { supabase } from './supabaseClient';
-import type { TranscriptionItem } from '../types';
+import type { TranscriptionItem, ChatMessage } from '../types';
 
 type TranscriptionRow = {
     id: number;
@@ -14,6 +14,14 @@ type TranscriptionRow = {
     created_at: string;
     error?: string;
     tags?: string[];
+};
+
+type DocumentChatRow = {
+    id: number;
+    user_id: string;
+    transcription_id: number;
+    messages: ChatMessage[];
+    updated_at: string;
 };
 
 // Table name in Supabase
@@ -210,5 +218,59 @@ export const dbService = {
          // or just rely on the download failing gracefully.
          // For now, we assume if the record exists in DB, the file *should* exist.
          return true; 
+    },
+
+    // --- DOCUMENT CHAT OPERATIONS ---
+
+    getDocumentChat: async (transcriptionId: number): Promise<ChatMessage[]> => {
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData?.user?.id;
+
+        if (!userId) {
+            console.warn("getDocumentChat called without authenticated user");
+            return [];
+        }
+
+        const { data, error } = await supabase
+            .from<DocumentChatRow>('document_chats')
+            .select('messages')
+            .eq('user_id', userId)
+            .eq('transcription_id', transcriptionId)
+            .maybeSingle();
+
+        if (error) {
+            console.error("Error fetching document chat:", error);
+            return [];
+        }
+
+        return data?.messages || [];
+    },
+
+    saveDocumentChat: async (transcriptionId: number, messages: ChatMessage[]): Promise<void> => {
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData?.user?.id;
+
+        if (!userId) {
+            console.warn("saveDocumentChat called without authenticated user");
+            return;
+        }
+
+        console.log("🔵 saveDocumentChat -> user:", userId, "transcription:", transcriptionId, "messages:", messages.length);
+
+        const { error } = await supabase
+            .from('document_chats')
+            .upsert(
+                {
+                    user_id: userId,
+                    transcription_id: transcriptionId,
+                    messages,
+                },
+                { onConflict: 'user_id,transcription_id' }
+            );
+
+        if (error) {
+            console.error("Error saving document chat:", error);
+            throw error;
+        }
     }
 };

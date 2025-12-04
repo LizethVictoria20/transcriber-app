@@ -6,27 +6,31 @@ import {
   HiPaperAirplane,
   HiOutlineChatBubbleLeftRight,
 } from "react-icons/hi2";
+import { dbService } from "../../services/database";
+import type { ChatMessage } from "../../types";
 
 interface DocumentChatProps {
   transcriptionText: string;
+  transcriptionId: number;
 }
 
-interface Message {
-  id: string;
-  role: "user" | "model" | "error";
-  text: string;
-}
-
-export default function DocumentChat({ transcriptionText }: DocumentChatProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export default function DocumentChat({
+  transcriptionText,
+  transcriptionId,
+}: DocumentChatProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const chatSessionRef = useRef<Chat | null>(null);
 
+  // Cargar historial guardado (por usuario + transcripción)
   useEffect(() => {
-    if (!chatSessionRef.current) {
+    let cancelled = false;
+
+    const initChat = async () => {
       try {
         const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
 
@@ -42,25 +46,42 @@ export default function DocumentChat({ transcriptionText }: DocumentChatProps) {
           },
         });
 
-        setMessages([
-          {
-            id: "init",
-            role: "model",
-            text: "Hola, he analizado el documento. ¿Qué información específica necesitas encontrar?",
-          },
-        ]);
+        const storedMessages = await dbService.getDocumentChat(transcriptionId);
+
+        if (cancelled) return;
+
+        if (storedMessages && storedMessages.length > 0) {
+          setMessages(storedMessages);
+        } else {
+          setMessages([
+            {
+              id: "init",
+              role: "model",
+              text: "Hola, he analizado el documento. ¿Qué información específica necesitas encontrar?",
+            },
+          ]);
+        }
+        setIsInitialized(true);
       } catch (error) {
         console.error("Failed to initialize chat session", error);
-        setMessages([
-          {
-            id: "err",
-            role: "error",
-            text: "Error al inicializar el chat. Verifica tu conexión.",
-          },
-        ]);
+        if (!cancelled) {
+          setMessages([
+            {
+              id: "err",
+              role: "error",
+              text: "Error al inicializar el chat. Verifica tu conexión.",
+            },
+          ]);
+        }
       }
-    }
-  }, [transcriptionText]);
+    };
+
+    initChat();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [transcriptionId, transcriptionText]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -70,10 +91,18 @@ export default function DocumentChat({ transcriptionText }: DocumentChatProps) {
     scrollToBottom();
   }, [messages]);
 
+  // Guardar historial cada vez que cambian los mensajes (tras inicializar)
+  useEffect(() => {
+    if (!transcriptionId || !isInitialized) return;
+    dbService.saveDocumentChat(transcriptionId, messages).catch((err) =>
+      console.error("Error saving chat history", err)
+    );
+  }, [messages, transcriptionId, isInitialized]);
+
   const handleSend = async () => {
     if (!input.trim() || !chatSessionRef.current || isLoading) return;
 
-    const userMessage: Message = {
+    const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
       text: input,
@@ -89,7 +118,7 @@ export default function DocumentChat({ transcriptionText }: DocumentChatProps) {
           message: input,
         });
 
-      const modelMessage: Message = {
+      const modelMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "model",
         text: result.text || "No pude generar una respuesta.",

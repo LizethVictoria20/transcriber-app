@@ -75,6 +75,12 @@ export interface TranscriptionItem {
   tags?: string[];
 }
 
+export interface ChatMessage {
+  id: string;
+  role: "user" | "model" | "error";
+  text: string;
+}
+
 export interface User {
   id: string;
   email: string;
