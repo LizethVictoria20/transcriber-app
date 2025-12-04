@@ -24,12 +24,13 @@ const BUCKET_NAME = 'pdfs';
 export const dbService = {
     // --- DATABASE OPERATIONS ---
 
-    getAllTranscriptions: async (): Promise<TranscriptionItem[]> => {
-        const { data: userData } = await supabase.auth.getUser();
-        const userId = userData?.user?.id;
-        
-        console.log('🔵 getAllTranscriptions - Usuario:', userId);
-        
+    getAllTranscriptions: async (userId: string | null): Promise<TranscriptionItem[]> => {
+        console.log('🔵 getAllTranscriptions - Usuario (propagado):', userId);
+
+        if (!userId) {
+            return [];
+        }
+
         const { data, error } = await supabase
             .from(TABLE_NAME)
             .select('*')

@@ -38,8 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const signUp = async (email: string, pass: string, name?: string) => {
-        const user = await authService.signUp(email, pass, name);
-        setUser(user);
+        await authService.signUp(email, pass, name);
     };
 
     const signOut = async () => {

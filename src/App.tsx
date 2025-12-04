@@ -88,7 +88,7 @@ function AppContent() {
     useEffect(() => {
         if (user) {
             setIsLoadingData(true);
-            dbService.getAllTranscriptions()
+            dbService.getAllTranscriptions(user.id)
                 .then(data => setTranscriptions(data))
                 .catch(err => console.error("Failed to load transcriptions", err))
                 .finally(() => setIsLoadingData(false));
@@ -183,7 +183,7 @@ function AppContent() {
             // Try to reload data to keep UI consistent
             try {
                 setIsLoadingData(true);
-                const data = await dbService.getAllTranscriptions();
+                const data = await dbService.getAllTranscriptions(user ? user.id : null);
                 setTranscriptions(data);
             } catch (reloadError) {
                 console.error("Failed to reload transcriptions after delete error", reloadError);
@@ -213,7 +213,7 @@ function AppContent() {
             // Intentar recargar datos reales desde la BD
             try {
                 setIsLoadingData(true);
-                const data = await dbService.getAllTranscriptions();
+                const data = await dbService.getAllTranscriptions(user ? user.id : null);
                 setTranscriptions(data);
             } catch (reloadError) {
                 console.error("Failed to reload transcriptions after clear error", reloadError);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import ConfirmModal from "../../components/ConfirmModal";
 
 export default function RegisterView() {
   const { signUp } = useAuth();
@@ -11,6 +12,7 @@ export default function RegisterView() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +37,7 @@ export default function RegisterView() {
     setLoading(true);
     try {
       await signUp(email, password, name.trim());
-      // El usuario será redirigido automáticamente por AuthContext
+      setShowVerificationModal(true);
     } catch (err: any) {
       setError(err.message || "Error al crear la cuenta. Por favor intenta de nuevo.");
     } finally {
@@ -186,6 +188,24 @@ export default function RegisterView() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showVerificationModal}
+        title="Verifica tu correo electrónico"
+        message={
+          email
+            ? `Hemos enviado un enlace de verificación a ${email}. Revisa tu bandeja de entrada (y la carpeta de spam) y confirma tu cuenta para poder iniciar sesión.`
+            : "Hemos enviado un enlace de verificación a tu correo. Revisa tu bandeja de entrada (y la carpeta de spam) y confirma tu cuenta para poder iniciar sesión."
+        }
+        confirmText="Ir a iniciar sesión"
+        cancelText="Cerrar"
+        onConfirm={() => {
+          setShowVerificationModal(false);
+          navigate("/login");
+        }}
+        onCancel={() => setShowVerificationModal(false)}
+        variant="info"
+      />
     </div>
   );
 }
