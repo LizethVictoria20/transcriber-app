@@ -7,7 +7,7 @@ interface AuthContextType {
     user: User | null;
     loading: boolean;
     signIn: (email: string, pass: string) => Promise<void>;
-    signUp: (email: string, pass: string) => Promise<void>;
+    signUp: (email: string, pass: string, name?: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -37,8 +37,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(user);
     };
 
-    const signUp = async (email: string, pass: string) => {
-        const user = await authService.signUp(email, pass);
+    const signUp = async (email: string, pass: string, name?: string) => {
+        const user = await authService.signUp(email, pass, name);
         setUser(user);
     };
 

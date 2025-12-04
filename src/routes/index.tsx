@@ -7,6 +7,7 @@ import MainLayout from '../layouts/MainLayout';
 
 // Views
 import LoginView from '../views/auth/LoginView';
+import RegisterView from '../views/auth/RegisterView';
 import TranscribeView from '../views/transcribe/TranscribeView';
 import HistoryView from '../views/history/HistoryView';
 import TranscriptionDetailView from '../views/history/TranscriptionDetailView';
@@ -83,13 +84,6 @@ export default function AppRoutes({
   onSelectTranscription,
   onBack,
 }: AppRoutesProps) {
-  const { user } = useAuth();
-
-  // If not logged in, show login
-  if (!user) {
-    return <LoginView />;
-  }
-
   return (
     <MainLayout>
       <Routes>
@@ -173,8 +167,9 @@ export default function AppRoutes({
           }
         />
 
-        {/* Login route */}
+        {/* Auth routes */}
         <Route path="/login" element={<LoginView />} />
+        <Route path="/register" element={<RegisterView />} />
 
         {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

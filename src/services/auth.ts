@@ -20,13 +20,13 @@ export const authService = {
         };
     },
 
-    signUp: async (email: string, password: string): Promise<User> => {
+    signUp: async (email: string, password: string, name?: string): Promise<User> => {
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
                 data: {
-                    name: email.split('@')[0],
+                    name: name || email.split('@')[0],
                 }
             }
         });
@@ -37,7 +37,7 @@ export const authService = {
         return {
             id: data.user.id,
             email: data.user.email || '',
-            name: data.user.user_metadata?.name,
+            name: data.user.user_metadata?.name || name || email.split('@')[0],
         };
     },
 
