@@ -154,20 +154,20 @@ export default function DocumentChat({
   ];
 
   return (
-    <div className="flex flex-col h-[600px] bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden relative shadow-inner">
+    <div className="flex flex-col h-[600px] bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative shadow-inner">
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
         {messages.length === 0 && (
           <div
             className="h-full flex flex-col items-center justify-center text-center opacity-0 animate-fadeIn"
             style={{ animationFillMode: "forwards" }}
           >
-            <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center mb-4">
-              <HiOutlineChatBubbleLeftRight className="w-8 h-8 text-blue-500" />
+            <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-4">
+              <HiOutlineChatBubbleLeftRight className="w-8 h-8 text-blue-500 dark:text-blue-300" />
             </div>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
               Chat con tu Documento
             </h3>
-            <p className="text-sm text-slate-500 max-w-xs mt-2 mb-8">
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs mt-2 mb-8">
               Haz preguntas específicas sobre el contenido de la transcripción.
               La IA analizará el contexto por ti.
             </p>
@@ -177,7 +177,7 @@ export default function DocumentChat({
                 <button
                   key={idx}
                   onClick={() => setInput(prompt)}
-                  className="text-xs text-left px-4 py-3 bg-white border border-slate-200 rounded-xl hover:border-blue-300 hover:text-blue-600 hover:shadow-sm transition-all text-slate-600 font-medium"
+                  className="text-xs text-left px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-300 hover:shadow-sm transition-all text-slate-600 dark:text-slate-200 font-medium"
                 >
                   {prompt}
                 </button>
@@ -196,8 +196,8 @@ export default function DocumentChat({
               }`}
             >
               {!isUser && (
-                <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm">
-                  <HiSparkles className="w-4 h-4 text-purple-600" />
+                <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 mt-1 shadow-sm">
+                  <HiSparkles className="w-4 h-4 text-purple-600 dark:text-purple-300" />
                 </div>
               )}
 
@@ -205,15 +205,15 @@ export default function DocumentChat({
                 className={`max-w-[80%] px-5 py-3.5 text-sm leading-relaxed shadow-sm whitespace-pre-wrap ${
                   isUser
                     ? "bg-blue-600 text-white rounded-2xl rounded-tr-none"
-                    : "bg-white border border-slate-200 text-slate-700 rounded-2xl rounded-tl-none"
+                    : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-100 rounded-2xl rounded-tl-none"
                 }`}
               >
                 {msg.text}
               </div>
 
               {isUser && (
-                <div className="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 mt-1">
-                  <HiUser className="w-4 h-4 text-blue-700" />
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 flex items-center justify-center shrink-0 mt-1">
+                  <HiUser className="w-4 h-4 text-blue-700 dark:text-blue-300" />
                 </div>
               )}
             </div>
@@ -222,20 +222,20 @@ export default function DocumentChat({
 
         {isLoading && (
           <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm">
-              <HiSparkles className="w-4 h-4 text-purple-600" />
+            <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 mt-1 shadow-sm">
+              <HiSparkles className="w-4 h-4 text-purple-600 dark:text-purple-300" />
             </div>
-            <div className="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1.5">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1.5">
               <div
-                className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce"
                 style={{ animationDelay: "0ms" }}
               ></div>
               <div
-                className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce"
                 style={{ animationDelay: "150ms" }}
               ></div>
               <div
-                className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-slate-400 dark:bg-slate-500 rounded-full animate-bounce"
                 style={{ animationDelay: "300ms" }}
               ></div>
             </div>
@@ -245,10 +245,10 @@ export default function DocumentChat({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="bg-white border-t border-slate-200 p-4">
-        <div className="relative flex items-end gap-2 bg-slate-50 border border-slate-200 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400 transition-all shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4">
+        <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-2 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400 dark:focus-within:border-blue-500 transition-all shadow-sm">
           <textarea
-            className="w-full bg-transparent border-none text-slate-800 text-sm px-3 py-2.5 focus:ring-0 outline-none resize-none max-h-32 placeholder:text-slate-400"
+            className="w-full bg-transparent border-none text-slate-800 dark:text-slate-100 text-sm px-3 py-2.5 focus:ring-0 outline-none resize-none max-h-32 placeholder:text-slate-400 dark:placeholder:text-slate-500"
             placeholder="Pregunta algo sobre el documento..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -271,7 +271,7 @@ export default function DocumentChat({
             )}
           </button>
         </div>
-        <p className="text-[10px] text-center text-slate-400 mt-2">
+        <p className="text-[10px] text-center text-slate-400 dark:text-slate-500 mt-2">
           La IA puede cometer errores. Verifica la información importante.
         </p>
       </div>
