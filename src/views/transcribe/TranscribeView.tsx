@@ -244,7 +244,7 @@ export default function TranscribeView({
         setProgress(((i + 1) / pagesToTranscribe.length) * 100);
       }
 
-      await dbService.createTranscription(
+      const created = await dbService.createTranscription(
         {
           name: transcriptionName || pdfFile.name,
           fileName: pdfFile.name,
@@ -258,7 +258,7 @@ export default function TranscribeView({
         pdfFile
       );
 
-      onTranscriptionComplete({} as TranscriptionItem);
+      onTranscriptionComplete(created);
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Error desconocido");

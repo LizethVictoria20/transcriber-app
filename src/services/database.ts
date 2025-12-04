@@ -84,7 +84,8 @@ export const dbService = {
 
         if (error) throw error;
 
-        const newItemId = data.id;
+        const inserted = data as TranscriptionRow;
+        const newItemId = inserted.id;
 
         // 2. Upload File to Storage
         // Path format: user_id/transcription_id.pdf
@@ -98,11 +99,19 @@ export const dbService = {
             // Optional: delete the DB record if file upload fails?
         }
 
+        // Normalize using the same mapping as getAllTranscriptions
         return {
-            ...item,
-            id: newItemId,
-            date: new Date(data.created_at).toLocaleString(),
-            tags: data.tags || []
+            id: inserted.id,
+            name: inserted.name,
+            fileName: inserted.file_name,
+            pages: inserted.pages,
+            pageCount: inserted.page_count,
+            originalPageCount: inserted.original_page_count,
+            provider: inserted.provider,
+            transcription: inserted.transcription,
+            date: new Date(inserted.created_at).toLocaleString(),
+            error: inserted.error,
+            tags: inserted.tags || []
         };
     },
 
