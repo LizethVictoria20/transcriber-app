@@ -12,7 +12,8 @@ const defaultPrompts: Prompts = {
     transcriptionTranslate: "Transcribe el texto de esta imagen traduciéndolo directamente del inglés al español. Mantén el formato original y el sentido del texto.",
     summary: "Analiza la siguiente transcripción de un documento y extrae las partes o temas más importantes. Para cada parte, proporciona un título conciso (topic) y un breve resumen (summary). La transcripción es:\n\n[TRANSCRIPTION]",
     pageSummary: "Analiza el siguiente texto, que contiene transcripciones de un documento PDF separadas por marcadores de página (ej: --- PÁGINA X ---). Genera un resumen conciso del contenido específico de cada página individualmente. La transcripción es:\n\n[TRANSCRIPTION]",
-    autoTagging: "Analiza la siguiente transcripción y genera una lista de 3 a 5 etiquetas (tags) cortas y relevantes que clasifiquen este documento (ej: 'Factura', 'Legal', 'Médico', 'Contrato', 'Urgente'). Devuelve SOLO un array JSON de strings.\n\n[TRANSCRIPTION]"
+    autoTagging: "Analiza la siguiente transcripción y genera una lista de 3 a 5 etiquetas (tags) cortas y relevantes que clasifiquen este documento (ej: 'Factura', 'Legal', 'Médico', 'Contrato', 'Urgente'). Devuelve SOLO un array JSON de strings.\n\n[TRANSCRIPTION]",
+    documentIndex: "Analiza el siguiente documento y crea un índice detallado de TODOS los documentos/secciones que contiene.\n\nPara cada documento o sección identificada, extrae:\n\n1. **Nombre literal del documento**: El título EXACTO como aparece en el documento (ej: 'DECLARACIÓN JURADA', 'DECISIÓN N° 123-2024', 'CONTRATO DE ARRENDAMIENTO', etc.)\n\n2. **¿Es un Anexo?**: Indica 'Sí' si es un anexo, apéndice o documento adjunto. Indica 'No' si es un documento principal. Indica 'N/A' si no aplica.\n\n3. **Páginas (paginación interna)**: Si el documento tiene su propia numeración de páginas (ej: '1-5', 'i-iii', '1-20'), indícala. Si no tiene paginación interna visible, indica 'N/A'.\n\n4. **Página del PDF**: Indica en qué página(s) del PDF completo se encuentra este documento. Busca los marcadores 'PÁGINA X (PDF Original: Y)' para identificar esto. Usa formato '15-20' para rangos o '15' para página única.\n\n5. **Notas**: Cualquier información adicional relevante (ej: 'Documento firmado', 'Copia certificada', 'Incompleto', 'Con sellos oficiales', etc.). Si no hay notas, indica 'N/A'.\n\nINSTRUCCIONES IMPORTANTES:\n- Identifica TODOS los documentos presentes, no solo los principales\n- Usa los nombres LITERALES como aparecen (no traduzcas ni parafrasees)\n- Si el documento contiene subdocumentos (ej: Expediente con Declaración + Sentencia + Pruebas), lista cada uno por separado\n- Mantén el orden cronológico/secuencial del documento\n- Si encuentras encabezados, títulos o nombres oficiales, úsalos tal cual\n\nDOCUMENTO A ANALIZAR:\n[TRANSCRIPTION]"
 };
 
 const defaultAlertSettings: AlertSettings = {
@@ -71,6 +72,14 @@ function AppContent() {
     const [alertSettings, setAlertSettings] = useLocalStorage<AlertSettings>('alertSettings_v2', defaultAlertSettings);
     const [sotSettings, setSotSettings] = useLocalStorage<SotSettings>('sotSettings', defaultSotSettings);
     const [systemPreferences, setSystemPreferences] = useLocalStorage<SystemPreferences>('systemPreferences_v2', defaultSystemPreferences);
+
+    // Migración: asegurar que todos los campos de prompts existan
+    useEffect(() => {
+        const hasAllFields = Object.keys(defaultPrompts).every(key => key in prompts);
+        if (!hasAllFields) {
+            setPrompts({ ...defaultPrompts, ...prompts });
+        }
+    }, []);
 
     useEffect(() => {
     const root = window.document.documentElement;

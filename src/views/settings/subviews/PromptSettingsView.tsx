@@ -167,6 +167,16 @@ export default function PromptSettingsView({
               "Debe devolver estrictamente un array JSON de strings para las sugerencias.",
               "[TRANSCRIPTION]"
             )}
+
+            {renderPromptField(
+              "prompt-document-index",
+              "Índice de Documentos (Tabla Estructurada)",
+              localPrompts.documentIndex,
+              "documentIndex",
+              <HiOutlineTableCells className="w-6 h-6" />,
+              "Genera un índice detallado con columnas: N.°, Nombre del documento, Anexo, Páginas internas, Página del PDF, Notas.",
+              "[TRANSCRIPTION]"
+            )}
           </div>
         </section>
       </div>

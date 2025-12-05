@@ -31,8 +31,12 @@ interface TranscriptionDetailViewProps {
 }
 
 interface TableRow {
-  topic: string;
-  summary: string;
+  number: number;
+  documentName: string;
+  isAnnex: string;
+  internalPages: string;
+  pdfPages: string;
+  notes: string;
 }
 
 interface PageTableRow {
@@ -446,48 +450,55 @@ export default function TranscriptionDetailView({
     setGeneratedTable(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
       const text = getCleanText();
-      const prompt = prompts.summary.replace("[TRANSCRIPTION]", text);
+      
+      // Usar el prompt de configuración y reemplazar la variable [TRANSCRIPTION]
+      const indexPrompt = prompts.documentIndex.replace("[TRANSCRIPTION]", text);
 
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: prompt,
+        contents: indexPrompt,
         config: {
           responseMimeType: "application/json",
           responseSchema: {
             type: Type.OBJECT,
             properties: {
-              important_parts: {
+              documents: {
                 type: Type.ARRAY,
                 items: {
                   type: Type.OBJECT,
                   properties: {
-                    topic: { type: Type.STRING },
-                    summary: { type: Type.STRING },
+                    documentName: { type: Type.STRING },
+                    isAnnex: { type: Type.STRING },
+                    internalPages: { type: Type.STRING },
+                    pdfPages: { type: Type.STRING },
+                    notes: { type: Type.STRING },
                   },
-                  required: ["topic", "summary"],
+                  required: ["documentName", "isAnnex", "internalPages", "pdfPages", "notes"],
                 },
               },
             },
-            required: ["important_parts"],
+            required: ["documents"],
           },
         },
       });
 
       const jsonResult = JSON.parse(response.text);
 
-      if (
-        jsonResult.important_parts &&
-        Array.isArray(jsonResult.important_parts)
-      ) {
-        setGeneratedTable(jsonResult.important_parts);
+      if (jsonResult.documents && Array.isArray(jsonResult.documents)) {
+        // Agregar numeración secuencial
+        const documentsWithNumbers = jsonResult.documents.map((doc: Omit<TableRow, 'number'>, index: number) => ({
+          number: index + 1,
+          ...doc
+        }));
+        setGeneratedTable(documentsWithNumbers);
       } else {
         throw new Error("La respuesta de la API no tiene el formato esperado.");
       }
     } catch (err) {
       console.error("Error generating table:", err);
-      setGenerationError("No se pudo generar la tabla.");
+      setGenerationError("No se pudo generar el índice.");
     } finally {
       setGeneratingTable(false);
     }
@@ -829,7 +840,7 @@ export default function TranscriptionDetailView({
                 ) : (
                   <HiOutlineTableCells className="w-4 h-4" />
                 )}
-                Resumen General
+                Índice del Documento
               </button>
               <button
                 onClick={generatePageTable}
@@ -882,29 +893,53 @@ export default function TranscriptionDetailView({
       {(generatedTable || generatedPageTable) && (
         <div className="mt-12 space-y-8 animate-fadeIn">
           {generatedTable && (
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
-                <HiOutlineTableCells className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900">
-                  Resumen General Inteligente
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm dark:bg-gray-900 dark:border-gray-700">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2 dark:bg-gray-800 dark:border-gray-700">
+                <HiOutlineTableCells className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <h3 className="font-bold text-slate-900 dark:text-slate-50">
+                  Índice del Documento
                 </h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                  <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-slate-400">
                     <tr>
-                      <th className="px-6 py-3 font-bold">Tema Principal</th>
-                      <th className="px-6 py-3 font-bold">Resumen Detallado</th>
+                      <th className="px-4 py-3 font-bold text-center whitespace-nowrap">N.°</th>
+                      <th className="px-4 py-3 font-bold whitespace-nowrap">Nombre literal del documento</th>
+                      <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Anexo</th>
+                      <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Páginas (paginación interna)</th>
+                      <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Página del PDF</th>
+                      <th className="px-4 py-3 font-bold whitespace-nowrap">Notas</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {generatedTable.map((part, index) => (
-                      <tr key={index} className="hover:bg-slate-50/50">
-                        <td className="px-6 py-4 font-bold text-slate-700 w-1/4">
-                          {part.topic}
+                  <tbody className="divide-y divide-slate-100 dark:divide-gray-700">
+                    {generatedTable.map((doc, index) => (
+                      <tr key={index} className="hover:bg-slate-50/50 dark:hover:bg-gray-800/50">
+                        <td className="px-4 py-4 text-slate-500 dark:text-slate-400 text-center font-medium">
+                          {doc.number}
                         </td>
-                        <td className="px-6 py-4 text-slate-600 leading-relaxed">
-                          {part.summary}
+                        <td className="px-4 py-4 font-bold text-slate-700 dark:text-slate-200">
+                          {doc.documentName}
+                        </td>
+                        <td className="px-4 py-4 text-center">
+                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
+                            doc.isAnnex.toLowerCase() === 'sí' || doc.isAnnex.toLowerCase() === 'si'
+                              ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                              : doc.isAnnex.toLowerCase() === 'no'
+                              ? 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                              : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                          }`}>
+                            {doc.isAnnex}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-slate-600 dark:text-slate-300 text-center font-mono text-xs">
+                          {doc.internalPages}
+                        </td>
+                        <td className="px-4 py-4 text-slate-600 dark:text-slate-300 text-center font-mono text-xs font-semibold">
+                          {doc.pdfPages}
+                        </td>
+                        <td className="px-4 py-4 text-slate-600 dark:text-slate-300 text-sm">
+                          {doc.notes}
                         </td>
                       </tr>
                     ))}

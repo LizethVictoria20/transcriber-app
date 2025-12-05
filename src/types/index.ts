@@ -9,6 +9,7 @@ export interface Prompts {
   summary: string;
   pageSummary: string;
   autoTagging: string;
+  documentIndex: string;
 }
 
 export interface AlertConfig {
