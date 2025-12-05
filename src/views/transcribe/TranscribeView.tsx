@@ -240,7 +240,11 @@ export default function TranscribeView({
           transcription = data.choices[0].message.content;
         }
 
-        fullTranscription += `--- PÁGINA ${pageNum} ---\n\n${transcription}\n\n`;
+        const sequentialNumber = i + 1;
+        fullTranscription += `--- PÁGINA ${sequentialNumber} (PDF Original: ${pageNum}) ---\n`;
+        fullTranscription += `[Transcription Page ${sequentialNumber} | File Page ${pageNum} REFERENCE — DO NOT CITE THIS NUMBER - for transcription reference only; not an official page number; do not use in citations, footnotes, bibliographies, or tables of contents]\n\n`;
+        fullTranscription += `${transcription}\n\n`;
+        
         setProgress(((i + 1) / pagesToTranscribe.length) * 100);
       }
 

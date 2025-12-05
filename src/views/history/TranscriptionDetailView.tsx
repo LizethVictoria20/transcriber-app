@@ -80,9 +80,33 @@ export default function TranscriptionDetailView({
 
   useEffect(() => {
     let initialContent = item.transcription;
+
     if (!/<[a-z][\s\S]*>/i.test(initialContent)) {
-      initialContent = initialContent.replace(/\n/g, "<br/>");
+      // Reemplazar marcadores de página tipo "--- PÁGINA X (PDF Original: Y) ---" por un banner visual
+      const pageMarkerRegex = /^---\s*P[ÁA]GINA\s+(\d+)\s*\(PDF Original:\s*(\d+)\)\s*---$/i;
+      const lines = initialContent.split("\n");
+      const transformedLines = lines.map((line) => {
+        const match = line.trim().match(pageMarkerRegex);
+        if (match) {
+          const sequentialNum = match[1]; // Numeración de la transcripción (1, 2, 3...)
+          const pdfPageNum = match[2];    // Número de página del PDF original
+          const totalPages = item.originalPageCount || '?';
+          const bannerText =
+            `Página ${sequentialNum} de ${item.pageCount} | ` +
+            `[File Page ${pdfPageNum} de ${totalPages} REFERENCE — DO NOT CITE THIS NUMBER - ` +
+            `for transcription reference only; not an official page number; ` +
+            `do not use in citations, footnotes, bibliographies, or tables of contents]`;
+
+          return `<div class="page-ref-banner text-[11px] font-semibold text-slate-700 dark:text-slate-200 bg-blue-50 dark:bg-slate-800 border border-blue-100 dark:border-slate-700 rounded-lg px-3 py-2 my-4">
+  ${bannerText}
+</div>`;
+        }
+        return line;
+      });
+
+      initialContent = transformedLines.join("\n").replace(/\n/g, "<br/>");
     }
+
     setHtmlContent(initialContent);
     if (editorRef.current) {
       editorRef.current.innerHTML = initialContent;
@@ -213,17 +237,9 @@ export default function TranscriptionDetailView({
   };
 
   const downloadTranscriptionPdf = async () => {
-    // Exportación basada en texto, pero con maquetación bonita en el PDF.
-    // Primero limpiamos marcadores de página tipo: --- PÁGINA 2 ---
     const rawText = getCleanText();
-    const text = rawText
-      .split("\n")
-      .filter(
-        (line) => !/^---\s*P[ÁA]GINA\s+\d+\s*---$/i.test(line.trim())
-      )
-      .join("\n");
-
-    if (!text.trim()) {
+    
+    if (!rawText.trim()) {
       alert("No hay contenido para exportar a PDF.");
       return;
     }
@@ -240,81 +256,156 @@ export default function TranscriptionDetailView({
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const contentWidth = pageWidth - margin * 2;
-
-      // --- ENCABEZADO ---
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(18);
-      doc.text(item.name, margin, margin);
-
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      let metaY = margin + 20;
-
-      doc.setTextColor(90);
-      doc.text(`Archivo: ${item.fileName}`, margin, metaY);
-      metaY += 14;
-      doc.text(`Páginas transcritas: ${item.pageCount ?? "-"}`, margin, metaY);
-      metaY += 14;
-      doc.text(`Fecha: ${item.date}`, margin, metaY);
-
-      // Línea separadora
-      const headerBottom = metaY + 12;
-      doc.setDrawColor(200);
-      doc.line(margin, headerBottom, pageWidth - margin, headerBottom);
-
-      // --- CUERPO DEL DOCUMENTO ---
-      doc.setTextColor(0);
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "normal");
-
-      let cursorY = headerBottom + 20;
       const lineHeight = 16;
 
-      // Dividir en párrafos (doble salto de línea)
-      const paragraphs = text
-        .split(/\n\s*\n/g)
-        .map((p) => p.trim())
-        .filter((p) => p.length > 0);
+      // Dividir el texto en páginas usando el marcador --- PÁGINA X (PDF Original: Y) ---
+      const pageMarkerRegex = /^---\s*P[ÁA]GINA\s+(\d+)\s*\(PDF Original:\s*(\d+)\)\s*---$/im;
+      // Regex para detectar el disclaimer que viene en el contenido
+      const disclaimerRegex = /^\[Transcription Page \d+ \| File Page \d+ REFERENCE.*?\]$/i;
+      const sections: Array<{ sequentialNum: number; pdfPageNum: number; content: string }> = [];
+      
+      const lines = rawText.split("\n");
+      let currentSequentialNum = 1;
+      let currentPdfPageNum = 1;
+      let currentContent: string[] = [];
 
-      paragraphs.forEach((paragraph, index) => {
-        const wrappedLines = doc.splitTextToSize(paragraph, contentWidth);
-
-        wrappedLines.forEach((line) => {
-          if (cursorY > pageHeight - margin) {
-            doc.addPage();
-
-            // Encabezado simple para páginas siguientes
-            doc.setFontSize(10);
-            doc.setTextColor(130);
-            doc.text(item.name, margin, margin - 10);
-
-            doc.setFontSize(12);
-            doc.setTextColor(0);
-            cursorY = margin;
+      for (const line of lines) {
+        const match = line.match(pageMarkerRegex);
+        const isDisclaimer = line.trim().match(disclaimerRegex);
+        
+        if (match) {
+          // Encontramos un marcador de página
+          if (currentContent.length > 0) {
+            sections.push({
+              sequentialNum: currentSequentialNum,
+              pdfPageNum: currentPdfPageNum,
+              content: currentContent.join("\n").trim(),
+            });
+            currentContent = [];
           }
+          currentSequentialNum = parseInt(match[1], 10);
+          currentPdfPageNum = parseInt(match[2], 10);
+        } else if (!isDisclaimer) {
+          // Solo agregar la línea si NO es un disclaimer
+          currentContent.push(line);
+        }
+        // Si es disclaimer, simplemente lo ignoramos (no lo agregamos al contenido)
+      }
 
+      // Agregar la última sección
+      if (currentContent.length > 0) {
+        sections.push({
+          sequentialNum: currentSequentialNum,
+          pdfPageNum: currentPdfPageNum,
+          content: currentContent.join("\n").trim(),
+        });
+      }
+
+      if (sections.length === 0) {
+        alert("No se encontraron páginas en la transcripción.");
+        return;
+      }
+
+      // Generar cada página en una hoja individual del PDF
+      sections.forEach((section, index) => {
+        if (index > 0) {
+          doc.addPage();
+        }
+
+        let cursorY = margin;
+
+        // --- ENCABEZADO DE PÁGINA ---
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(0);
+        const totalPages = item.originalPageCount || sections.length;
+        const totalTranscribedPages = item.pageCount || sections.length;
+        doc.text(`PÁGINA ${section.sequentialNum} de ${totalTranscribedPages}`, margin, cursorY);
+        cursorY += 20;
+
+        // Subtitle con número de página del PDF original
+        doc.setFontSize(12);
+        doc.setTextColor(80);
+        doc.text(`(PDF Original: Página ${section.pdfPageNum} de ${totalPages})`, margin, cursorY);
+        cursorY += 20;
+
+        // Disclaimer de referencia
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(100);
+        const disclaimer = `[Transcription Page ${section.sequentialNum} | File Page ${section.pdfPageNum} REFERENCE — DO NOT CITE THIS NUMBER - for transcription reference only; not an official page number; do not use in citations, footnotes, bibliographies, or tables of contents]`;
+        const disclaimerLines = doc.splitTextToSize(disclaimer, contentWidth);
+        disclaimerLines.forEach((line: string) => {
           doc.text(line, margin, cursorY);
-          cursorY += lineHeight;
+          cursorY += 10;
+        });
+        cursorY += 10;
+
+        // Línea separadora
+        doc.setDrawColor(200);
+        doc.line(margin, cursorY, pageWidth - margin, cursorY);
+        cursorY += 20;
+
+        // --- CONTENIDO DE LA PÁGINA ---
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0);
+
+        // Dividir contenido en párrafos
+        const paragraphs = section.content
+          .split(/\n\s*\n/g)
+          .map((p) => p.trim())
+          .filter((p) => p.length > 0);
+
+        paragraphs.forEach((paragraph) => {
+          const wrappedLines = doc.splitTextToSize(paragraph, contentWidth);
+
+          wrappedLines.forEach((line: string) => {
+            // Si llegamos al final de la página, continuar en la siguiente
+            if (cursorY > pageHeight - 100) {
+              doc.addPage();
+              cursorY = margin;
+              
+              // Mini-encabezado de continuación
+              doc.setFontSize(10);
+              doc.setTextColor(130);
+              const totalTranscribedPages = item.pageCount || sections.length;
+              doc.text(`PÁGINA ${section.sequentialNum} de ${totalTranscribedPages} (continuación) - PDF Original: Pág. ${section.pdfPageNum}`, margin, cursorY);
+              cursorY += 20;
+              doc.setFontSize(11);
+              doc.setTextColor(0);
+            }
+
+            doc.text(line, margin, cursorY);
+            cursorY += lineHeight;
+          });
+
+          // Espacio entre párrafos
+          cursorY += lineHeight * 0.5;
         });
 
-        // Espacio extra entre párrafos
-        cursorY += lineHeight * 0.5;
-      });
+        // --- FOOTER ---
+        const footerBaseText =
+          "[logs · File Page Reference · DO NOT CITE THIS NUMBER - for transcription reference only; not an official page number; do not use in citations, footnotes, bibliographies, or tables of contents]";
+        
+        doc.setFontSize(7);
+        doc.setTextColor(130);
+        const footerLines = doc.splitTextToSize(footerBaseText, contentWidth);
+        const footerLineHeight = 8;
+        const totalFooterHeight = footerLines.length * footerLineHeight;
+        let footerYStart = pageHeight - margin - totalFooterHeight;
 
-      // Pie de página simple con número de página
-      const pageCount = doc.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(9);
-        doc.setTextColor(150);
-        const footerText = `Página ${i} de ${pageCount}`;
-        const textWidth = doc.getTextWidth(footerText);
-        doc.text(
-          footerText,
-          pageWidth - margin - textWidth,
-          pageHeight - margin / 2
-        );
-      }
+        footerLines.forEach((line: string) => {
+          doc.text(line, margin, footerYStart);
+          footerYStart += footerLineHeight;
+        });
+
+        // Número de página (referencia de PDF, no del documento original)
+        doc.setFontSize(8);
+        const pageLabel = `Hoja ${index + 1} de ${sections.length}`;
+        const labelWidth = doc.getTextWidth(pageLabel);
+        doc.text(pageLabel, pageWidth - margin - labelWidth, pageHeight - 15);
+      });
 
       doc.save(`${item.name}-transcription.pdf`);
     } catch (error) {
@@ -513,12 +604,19 @@ export default function TranscriptionDetailView({
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-32 dark:bg-gray-900 dark:border-gray-700">
           <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">
-              Páginas Transcritas
+              Rango Transcrito
             </span>
             <HiOutlineDocumentText className="w-5 h-5" />
           </div>
-          <div className="text-3xl font-bold text-slate-900 dark:text-slate-50">
-            {item.pageCount || "0"}
+          <div className="flex flex-col">
+            <div className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+              {item.pages === "Todas" 
+                ? `1-${item.originalPageCount || item.pageCount}` 
+                : item.pages}
+            </div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {item.pageCount} {item.pageCount === 1 ? 'página' : 'páginas'} de {item.originalPageCount || item.pageCount}
+            </div>
           </div>
         </div>
 
